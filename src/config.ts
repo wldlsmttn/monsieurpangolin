@@ -5,7 +5,7 @@ export const SITE_CONFIG = {
     author: "Monsieur Pangolin",
     authorPhonetic: "",
     signature: "MP",
-    site: "https://monsieurpangolin.netlify.app",
+    site: "https://mondieurpangolin.netlify.app",
     imageServer: ["https://images.pexels.com"],
     postsPerPage: 6,
     projectsPerPage: 12,
