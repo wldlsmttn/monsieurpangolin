@@ -1,0 +1,208 @@
+---
+import { SITE_CONFIG } from "@/config";
+
+interface Props {
+    title: string;
+    description: string;
+    image?: string;
+    preconnectImageServer?: boolean;
+}
+
+const canonicalURL =
+    new URL(
+        Astro
+            .url
+            .pathname,
+        Astro.site ||
+            SITE_CONFIG.site,
+    );
+
+const {
+    title,
+    description,
+    image = SITE_CONFIG.defaultImage,
+    preconnectImageServer = false,
+} = Astro.props;
+---
+
+<!-- Global Metadata -->
+<meta
+    charset="utf-8"
+/>
+<meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+/>
+<link
+    rel="icon"
+    type="image/svg+xml"
+    href="/favicon.svg"
+/>
+<meta
+    name="generator"
+    content={Astro.generator}
+/>
+<meta
+    name="theme-color"
+    content="#ffffff"
+    id="theme-color-meta"
+/>
+
+{
+    SITE_CONFIG.imageServer &&
+        SITE_CONFIG.imageServer.map(
+            (
+                server,
+            ) => (
+                <>
+                    <link
+                        rel="dns-prefetch"
+                        href={
+                            server
+                        }
+                    />
+                    {preconnectImageServer && (
+                        <link
+                            rel="preconnect"
+                            href={
+                                server
+                            }
+                            crossorigin
+                        />
+                    )}
+                </>
+            ),
+        )
+}
+
+<!-- Machine-readable RSS Feed Auto-Discovery -->
+<link
+    rel="alternate"
+    type="application/rss+xml"
+    href={new URL("/rss.xml", Astro.site || SITE_CONFIG.site).toString()}
+    title={SITE_CONFIG.title}
+/>
+
+<!-- Machine-readable LLM context -->
+<link
+    rel="alternate"
+    type="text/markdown"
+    href={new URL("/llms.txt", Astro.site || SITE_CONFIG.site).toString()}
+    title="LLM Context"
+/>
+
+<!-- Font Preloads -->
+<!-- Fonts are imported locally in Layout.astro -->
+
+<!-- Canonical URL -->
+<link
+    rel="canonical"
+    href={canonicalURL}
+/>
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta
+    name="title"
+    content={title}
+/>
+<meta
+    name="description"
+    content={description}
+/>
+<meta
+    name="author"
+    content={SITE_CONFIG.author}
+/>
+<meta
+    name="robots"
+    content="index, follow"
+/>
+
+<!-- Open Graph / Facebook -->
+<meta
+    property="og:type"
+    content="website"
+/>
+<meta
+    property="og:url"
+    content={Astro.url}
+/>
+<meta
+    property="og:title"
+    content={title}
+/>
+<meta
+    property="og:description"
+    content={description}
+/>
+<meta
+    property="og:image"
+    content={new URL(
+        image,
+        Astro.url,
+    )}
+/>
+
+<!-- Twitter -->
+<meta
+    property="twitter:card"
+    content="summary_large_image"
+/>
+<meta
+    property="twitter:url"
+    content={Astro.url}
+/>
+<meta
+    property="twitter:title"
+    content={title}
+/>
+<meta
+    property="twitter:description"
+    content={description}
+/>
+<meta
+    property="twitter:image"
+    content={new URL(
+        image,
+        Astro.url,
+    )}
+/>
+
+<script is:inline>
+    const getTheme = () => {
+        if (typeof localStorage !== "undefined" && localStorage.getItem("theme")) {
+            return localStorage.getItem("theme");
+        }
+        return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    };
+
+    const applyTheme = (theme, doc = document) => {
+        const isDark = theme === "dark";
+        doc.documentElement.classList.toggle("dark", isDark);
+
+        // Update theme-color meta tag
+        const themeColor = isDark ? "#0a0a0a" : "#ffffff";
+        let metaThemeColor = doc.querySelector('meta[name="theme-color"]');
+        if (!metaThemeColor) {
+            metaThemeColor = doc.createElement("meta");
+            metaThemeColor.name = "theme-color";
+            doc.head.appendChild(metaThemeColor);
+        }
+        metaThemeColor.content = themeColor;
+
+        // Save preference
+        if (typeof localStorage !== "undefined") {
+            localStorage.setItem("theme", theme);
+        }
+    };
+
+    // Initialize theme
+    const theme = getTheme();
+    applyTheme(theme);
+
+    // Astro View Transitions Support
+    document.addEventListener("astro:before-swap", (event) => {
+        applyTheme(getTheme(), event.newDocument);
+    });
+</script>

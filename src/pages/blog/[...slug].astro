@@ -1,0 +1,401 @@
+---
+import {
+    getCollection,
+    render,
+} from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import { SITE_CONFIG } from "@/config";
+import ArticleAnimate from "@/components/ui/ArticleAnimate";
+import FadeContent from "@/components/ui/FadeContent";
+import ScrollFloat from "@/components/ui/ScrollFloat";
+import MDXImage from "@/components/blog/MDXImage.astro";
+import TableOfContents from "@/components/blog/TableOfContents.astro";
+import { RiArrowLeftDoubleLine, RiArrowRightDoubleLine, RiArrowRightUpLine } from "@remixicon/react";
+import "katex/dist/katex.min.css";
+
+export async function getStaticPaths() {
+    const posts = (await getCollection("blog")).sort(
+        (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+    );
+
+    const fs = await import('node:fs/promises');
+    const path = await import('node:path');
+
+    return await Promise.all(posts.map(async (post, i) => {
+        let extension = '.md';
+        try {
+            await fs.access(path.join(process.cwd(), 'src/content/blog', post.id + '.mdx'));
+            extension = '.mdx';
+        } catch (e) {}
+
+        return {
+            params: {
+                slug: post.id,
+            },
+            props: {
+                entry: post,
+                extension,
+                nextPost: i > 0 ? posts[i - 1] : null,
+                prevPost: i < posts.length - 1 ? posts[i + 1] : null,
+            },
+        };
+    }));
+}
+
+const {
+    entry,
+    extension,
+    nextPost,
+    prevPost,
+} = Astro.props;
+
+const {
+    Content,
+    headings,
+} =
+    await render(
+        entry,
+    );
+
+// Merge copyright settings: Article Frontmatter > Global Config
+const blogCopyright =
+    {
+        enabled:
+            entry
+                .data
+                .copyright
+                ?.enabled ??
+            SITE_CONFIG
+                .articleCopyright
+                ?.enabled,
+        declaration:
+            entry
+                .data
+                .copyright
+                ?.declaration ??
+            SITE_CONFIG
+                .articleCopyright
+                ?.declaration,
+        author:
+            entry
+                .data
+                .author ??
+            SITE_CONFIG.author ??
+            SITE_CONFIG.title,
+        proof: {
+            enabled:
+                entry
+                    .data
+                    .copyright
+                    ?.proof
+                    ?.enabled ??
+                SITE_CONFIG
+                    .articleCopyright
+                    ?.proof
+                    ?.enabled,
+            linkText:
+                entry
+                    .data
+                    .copyright
+                    ?.proof
+                    ?.linkText ??
+                SITE_CONFIG
+                    .articleCopyright
+                    ?.proof
+                    ?.linkText,
+            baseUrl:
+                entry
+                    .data
+                    .copyright
+                    ?.proof
+                    ?.baseUrl ??
+                SITE_CONFIG
+                    .articleCopyright
+                    ?.proof
+                    ?.baseUrl,
+            mode:
+                entry
+                    .data
+                    .copyright
+                    ?.proof
+                    ?.mode ??
+                SITE_CONFIG
+                    .articleCopyright
+                    ?.proof
+                    ?.mode,
+        },
+    };
+---
+
+<Layout
+    title={`${entry.data.title} // ${SITE_CONFIG.title}`}
+    description={entry.data.description}
+    image={entry.data.copyrightBg || undefined}
+    publishDate={entry.data.pubDate}
+    modifiedDate={entry.data.updatedDate}
+    authorName={entry.data.author}
+    rawContentUrl={`/raw/blog/${entry.id}${extension}`}
+>
+    <script
+        type="application/ld+json"
+        set:html={JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+                {
+                    "@type": "ListItem",
+                    "position": 1,
+                    "name": "Home",
+                    "item": SITE_CONFIG.site
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 2,
+                    "name": "Blog",
+                    "item": `${SITE_CONFIG.site}/blog`
+                },
+                {
+                    "@type": "ListItem",
+                    "position": 3,
+                    "name": entry.data.title,
+                    "item": `${SITE_CONFIG.site}/blog/${entry.id}`
+                }
+            ]
+        })}
+    />
+    <article
+        class="max-w-3xl mx-auto pt-4 md:pt-6 relative"
+        data-pagefind-body
+    >
+        <TableOfContents headings={headings} />
+
+        {/* Content Area */}
+        <div class="w-full">
+            <header
+                class="mb-12 text-left"
+            >
+
+                <h1
+                    class="text-2xl md:text-4xl font-bold tracking-tight leading-tight mb-8"
+                >
+                    <ScrollFloat
+                        client:load
+                        text={entry
+                            .data
+                            .title}
+                        className="text-2xl md:text-4xl font-bold tracking-tight leading-tight"
+                        scrollStart="top bottom"
+                        scrollEnd="top center+=200"
+                        stagger={0.02}
+                    />
+                </h1>
+
+                <FadeContent
+                    client:load
+                    delay={300}
+                    duration={800}
+                    blur={true}
+                >
+                    <p
+                        class="text-sm sm:text-base text-secondary-text/80 leading-relaxed"
+                    >
+                        {
+                            entry
+                                .data
+                                .description
+                        }
+                    </p>
+                    <div class="flex items-center justify-between text-[11px] sm:text-xs font-mono text-secondary-text mt-4 opacity-60 dark:opacity-85">
+                        <span>
+                            {
+                                entry.data.pubDate.toLocaleDateString(
+                                    "en-US",
+                                    {
+                                        year: "numeric",
+                                        month: "long",
+                                        day: "numeric",
+                                    },
+                                )
+                            }
+                        </span>
+                        <div class="flex items-center gap-3">
+                            <span class="uppercase tracking-wider text-accent font-semibold">{entry.data.category}</span>
+                            <span class="opacity-40">•</span>
+                            <span class="uppercase tracking-wider">{entry.data.depth}</span>
+                        </div>
+                    </div>
+                </FadeContent>
+            </header>
+
+            <ArticleAnimate
+                client:load
+                className="prose dark:prose-invert max-w-none prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight prose-a:text-black dark:prose-a:text-white prose-a:underline prose-a:decoration-1 prose-a:underline-offset-4 prose-blockquote:not-italic prose-blockquote:border-l-2 prose-blockquote:pl-6 prose-blockquote:border-black/20 dark:prose-blockquote:border-white/20"
+            >
+                <Content
+                    components={{
+                        img: MDXImage,
+                    }}
+                />
+
+                {
+                    /* Tags */
+                }
+                {
+                    entry.data.tags &&
+                        entry.data.tags.length > 0 && (
+                            <div class="mt-12 flex flex-wrap gap-2 not-prose">
+                                {entry.data.tags.map((tag: string) => (
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-black/[0.04] dark:bg-white/[0.08] hover:dark:bg-white/[0.12] rounded-full text-xs font-mono text-secondary-text dark:text-zinc-200 border border-black/5 dark:border-white/10 transition-colors">
+                                        <span class="text-secondary-text/50 dark:text-zinc-400">#</span>
+                                        <span class="font-medium tracking-wide">{tag}</span>
+                                    </span>
+                                ))}
+                            </div>
+                        )
+                }
+
+                {
+                    /* Copyright Declaration (Pure Typography Minimalist) */
+                }
+                {
+                    blogCopyright.enabled && (
+                        <div class="mt-20 pt-8 border-t border-black/10 dark:border-white/10 not-prose">
+                            <div class="flex flex-col md:flex-row justify-between items-start gap-6 md:gap-10">
+                                <div class="flex flex-col gap-3">
+                                    <span class="text-[11px] font-mono uppercase tracking-widest text-primary-text opacity-40">
+                                        Copyright
+                                    </span>
+                                    <div class="flex flex-col gap-1.5 text-[15px] font-sans text-primary-text">
+                                        <p class="opacity-90 font-light">
+                                            &copy; {entry.data.pubDate.getFullYear()} <span class="font-medium">{blogCopyright.author}</span>. All rights reserved.
+                                        </p>
+                                        <p class="opacity-60 text-sm font-light max-w-2xl leading-relaxed">
+                                            {blogCopyright.declaration}
+                                        </p>
+                                    </div>
+                                </div>
+                                {blogCopyright.proof?.enabled && (
+                                    <a
+                                        href={
+                                            blogCopyright.proof.mode === "dynamic"
+                                                ? `${blogCopyright.proof.baseUrl}/blog/${entry.id}`
+                                                : blogCopyright.proof.baseUrl
+                                        }
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        class="inline-flex items-center gap-1.5 text-xs font-mono text-primary-text transition-colors group/link pb-1 shrink-0 whitespace-nowrap md:mt-1"
+                                    >
+                                        <span class="opacity-60 group-hover/link:opacity-100 border-b border-black/20 dark:border-white/20 group-hover/link:border-black/60 dark:group-hover/link:border-white/60 transition-colors pb-0.5">
+                                            {blogCopyright.proof.linkText}
+                                        </span>
+                                        <RiArrowRightUpLine className="w-3.5 h-3.5 opacity-40 group-hover/link:opacity-100 transition-transform duration-300 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5" />
+                                    </a>
+                                )}
+                            </div>
+                        </div>
+                    )
+                }
+            </ArticleAnimate>
+
+            {
+                /* Footer / Signature */
+            }
+            <footer
+                class="mt-16 pt-12 border-t border-black/5 dark:border-white/5 space-y-12"
+            >
+                {
+                    /* Navigation Links */
+                }
+                <div
+                    class="flex flex-col sm:flex-row justify-between gap-6"
+                >
+                    <div
+                        class="flex-1 text-left"
+                    >
+                        {
+                            nextPost && (
+                                <a
+                                    href={`/blog/${nextPost.id}`}
+                                    class="group block"
+                                >
+                                    <span class="text-xs font-mono uppercase tracking-widest opacity-60 dark:opacity-80 flex items-center gap-1.5 mb-2 group-hover:opacity-100 transition-opacity">
+                                        <RiArrowLeftDoubleLine className="w-3.5 h-3.5 transition-transform duration-300 group-hover:-translate-x-0.5" />
+                                        <span>Next Post</span>
+                                    </span>
+                                    <span class="text-lg font-bold group-hover:underline">
+                                        {
+                                            nextPost
+                                                .data
+                                                .title
+                                        }
+                                    </span>
+                                </a>
+                            )
+                        }
+                    </div>
+                    <div
+                        class="flex-1 text-right"
+                    >
+                        {
+                            prevPost && (
+                                <a
+                                    href={`/blog/${prevPost.id}`}
+                                    class="group block"
+                                >
+                                    <span class="text-xs font-mono uppercase tracking-widest opacity-60 dark:opacity-80 flex items-center justify-end gap-1.5 mb-2 group-hover:opacity-100 transition-opacity">
+                                        <span>Previous Post</span>
+                                        <RiArrowRightDoubleLine className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+                                    </span>
+                                    <span class="text-lg font-bold group-hover:underline">
+                                        {
+                                            prevPost
+                                                .data
+                                                .title
+                                        }
+                                    </span>
+                                </a>
+                            )
+                        }
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </article>
+</Layout>
+
+
+
+<script>
+    function setupTOC() {
+        const toc = document.querySelector('.toc-container');
+        const backToTopBtn = document.getElementById('back-to-top-btn');
+
+        if (backToTopBtn) {
+            backToTopBtn.addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        }
+
+        if (!toc) return;
+
+        // Clean up previous event listener if it exists to prevent memory leaks during SPA navigations
+        if ((window as any)._tocScrollListener) {
+            window.removeEventListener('scroll', (window as any)._tocScrollListener);
+        }
+
+        const handleScroll = () => {
+            const isScrolled = window.scrollY > 220;
+            if (isScrolled) toc.classList.add('is-scrolled');
+            else toc.classList.remove('is-scrolled');
+        };
+
+        (window as any)._tocScrollListener = handleScroll;
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        handleScroll(); // Initial execution
+    }
+
+    // Initialize on page load
+    setupTOC();
+    // Re-initialize after view transitions
+    document.addEventListener('astro:after-swap', setupTOC);
+</script>

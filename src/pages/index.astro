@@ -1,19 +1,225 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Markdown from '../components/Markdown.astro';
+import Layout from "@/layouts/Layout.astro";
+import { SITE_CONFIG } from "@/config";
 
-const explainer = `
-An Astro website can go way beyond static pages - on the right platform.
+import {
+    Content as AboutContent,
+    frontmatter as aboutFrontmatter,
+} from "@/content/pages/about.md";
 
-Netlify supports not only [Streaming SSR](https://docs.astro.build/en/guides/server-side-rendering/#html-streaming) and fast [Edge Middleware](https://docs.astro.build/en/guides/middleware/), but also [on-demand revalidation](https://www.netlify.com/blog/cache-tags-and-purge-api-on-netlify/) and [stale-while-revalidate](https://www.netlify.com/blog/swr-and-fine-grained-cache-control/). 
-Any page or data can be rebuilt only when needed, without site visitors ever getting a performance hit.
-`;
+import DecryptedText from "@/components/ui/DecryptedText";
+import CursorGlow from "@/components/ui/CursorGlow";
+import HarmonicSystemSVG from "@/components/ui/HarmonicSystemSVG.astro";
 ---
 
-<Layout title="bye">
-    <h1 class="mb-10">Netlify Platform Starter for Astro</h1>
-    <Markdown content={explainer} class="mb-10 text-lg" />
-    <p>
-        <a href="https://docs.netlify.com/frameworks/astro/" class="btn btn-lg sm:min-w-64">Read the Docs</a>
-    </p>
+<Layout
+    title={`HOME // ${SITE_CONFIG.title}`}
+    description={SITE_CONFIG.description}
+>
+    <!-- Cursor Glow (Desktop only: mobile has no cursor) -->
+    <CursorGlow
+        client:media="(min-width: 768px)"
+    />
+
+    <!-- Background Layer -->
+    <div
+        class="fixed inset-0 flex items-center justify-center md:items-end md:justify-end z-[-1] pointer-events-none opacity-15 dark:opacity-30 overflow-hidden"
+    >
+        <div
+            class="relative w-[120vw] md:w-[800px] aspect-square md:-mr-32 md:-mb-32 flex items-center justify-center"
+        >
+            <HarmonicSystemSVG
+            />
+        </div>
+    </div>
+
+    <!-- Foreground Content Layer -->
+    <div
+        class="relative z-10 w-full min-h-screen flex flex-col pt-4 md:pt-8 pb-20 sm:px-4 md:px-12"
+    >
+        <!-- Reading Content Wrapper -->
+        <div
+            class="max-w-2xl mx-auto md:mx-0 w-full"
+        >
+            <!-- Header Area -->
+            <div>
+                <h1
+                    class="animate-cascade-header font-serif text-5xl md:text-7xl font-normal leading-none tracking-tight text-black dark:text-white mb-2 inline-flex items-start"
+                >
+                    <span>
+                        <DecryptedText
+                            client:idle
+                            text={SITE_CONFIG.author}
+                            speed={40}
+                            maxIterations={20}
+                            sequential={true}
+                            revealDirection="start"
+                            animateOn="view"
+                        />.
+                    </span>
+                    {
+                        SITE_CONFIG.authorPhonetic && (
+                            <span
+                                class="font-mono text-xs md:text-sm font-normal tracking-wider text-neutral-400 dark:text-neutral-500 ml-1.5 mt-1 md:mt-1.5 select-all"
+                                title="Phonetic transcription"
+                            >
+                                {SITE_CONFIG.authorPhonetic}
+                            </span>
+                        )
+                    }
+                </h1>
+
+                <!-- Description -->
+                <p
+                    class="animate-cascade-description text-sm text-gray-500 italic mt-6 md:mt-8"
+                >
+                    {
+                        aboutFrontmatter.description
+                    }
+                </p>
+            </div>
+
+            <!-- About Section (LCP Element rendered smoothly) -->
+            <div class="animate-cascade-prose">
+                <div
+                    class="prose dark:prose-invert max-w-none prose-p:leading-relaxed prose-p:text-base text-gray-800 dark:text-gray-300 mt-12 space-y-6"
+                >
+                    <AboutContent
+                    />
+                </div>
+            </div>
+
+            <!-- Signature -->
+            <div class="signature-wrap animate-cascade-signature text-right mt-10">
+                <span
+                    class="signature-text group/sig relative inline-block italic font-serif text-gray-600 dark:text-gray-400 text-lg cursor-default select-none transition-all duration-500 ease-out hover:tracking-wider hover:text-black dark:hover:text-white"
+                >
+                    <span>
+                        {
+                            SITE_CONFIG.signature ||
+                                SITE_CONFIG.author
+                        }
+                    </span>
+                    <span
+                        class="absolute -bottom-1 left-0 w-full h-[1px] bg-current opacity-30 scale-x-0 group-hover/sig:scale-x-100 origin-left transition-transform duration-500 ease-out pointer-events-none"
+                    />
+                </span>
+            </div>
+
+            <!-- CTA Links -->
+            <div>
+                <div
+                    class="flex flex-col sm:flex-row gap-6 sm:gap-8 mt-16 md:mt-20"
+                >
+                    {
+                        SITE_CONFIG.homepage.links.map(
+                            (
+                                link,
+                            ) => (
+                                <a
+                                    href={
+                                        link.href
+                                    }
+                                    class="cascade-link-item group flex items-center gap-2 text-xs font-medium tracking-widest uppercase text-gray-500 hover:text-black dark:hover:text-white transition-colors"
+                                >
+                                    <span class="relative">
+                                        {
+                                            link.text
+                                        }
+                                        <span class="absolute -bottom-1 left-0 w-full h-[1px] bg-gray-500 scale-x-0 group-hover:scale-x-100 origin-left transition-transform duration-300" />
+                                    </span>
+                                    <span class="transition-transform group-hover:translate-x-1">
+                                        →
+                                    </span>
+                                </a>
+                            ),
+                        )
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </Layout>
+
+<style>
+/* ==========================================================================
+   CASCADE ENTRANCE SYSTEM (Route A: Zero-JS, 60fps GPU Composited)
+   Restores cinema-grade staggered blur & elevation sequence
+   with ultra-smooth cubic-bezier spring easing, while protecting LCP.
+   ========================================================================== */
+
+@keyframes cascade-reveal {
+    0% {
+        opacity: 0;
+        filter: blur(8px);
+        transform: translateY(16px);
+    }
+    100% {
+        opacity: 1;
+        filter: blur(0px);
+        transform: translateY(0);
+    }
+}
+
+/* Specific keyframe for LCP prose: starts from 0.88 opacity with subtle lift
+   Ensures text is instantly recognized & painted by browser engine on frame 1,
+   while providing a gentle, natural settling motion to the eye */
+@keyframes cascade-prose-reveal {
+    0% {
+        opacity: 0.88;
+        transform: translateY(10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-cascade-header {
+    animation: cascade-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
+    will-change: opacity, transform, filter;
+}
+
+.animate-cascade-description {
+    animation: cascade-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
+    will-change: opacity, transform, filter;
+}
+
+.animate-cascade-prose {
+    animation: cascade-prose-reveal 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.22s both;
+    will-change: opacity, transform;
+}
+
+.animate-cascade-signature {
+    animation: cascade-reveal 0.85s cubic-bezier(0.16, 1, 0.3, 1) 0.35s both;
+    will-change: opacity, transform, filter;
+}
+
+.cascade-link-item:nth-child(1) {
+    animation: cascade-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.45s both;
+    will-change: opacity, transform, filter;
+}
+
+.cascade-link-item:nth-child(2) {
+    animation: cascade-reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.55s both;
+    will-change: opacity, transform, filter;
+}
+
+/* Accessibility: gracefully disable motion when requested */
+@media (prefers-reduced-motion: reduce) {
+    .animate-cascade-header,
+    .animate-cascade-description,
+    .animate-cascade-prose,
+    .animate-cascade-signature,
+    .cascade-link-item {
+        animation: none !important;
+        opacity: 1 !important;
+        filter: none !important;
+        transform: none !important;
+        will-change: auto !important;
+    }
+    .signature-text {
+        transition: none !important;
+    }
+}
+</style>

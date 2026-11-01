@@ -1,0 +1,32 @@
+import { SITE_CONFIG } from '@/config';
+
+export async function GET() {
+    const site = SITE_CONFIG.site;
+    const title = SITE_CONFIG.title;
+    const description = SITE_CONFIG.description;
+
+    const content = `\uFEFF# ${title}
+
+> ${description}
+
+## Core Resources
+
+- [Homepage](${site}/)
+- [Blog](${site}/blog)
+- [Projects](${site}/projects)
+- [Gallery](${site}/gallery)
+- [Traces](${site}/traces)
+- [About](${site}/about)
+
+## LLM & AI Services
+
+- [LLMs Full Index](${site}/llms-full.txt) - Complete index of all documents with raw markdown links.
+
+`;
+
+    return new Response(content, {
+        headers: {
+            'Content-Type': 'text/plain; charset=utf-8'
+        }
+    });
+}
