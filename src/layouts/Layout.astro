@@ -1,34 +1,243 @@
 ---
-import '../../src/styles/globals.css';
-import '@fontsource-variable/inter/wght.css';
-import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
+import BaseHead from "@/components/BaseHead.astro";
+import BlurBackground from "@/components/ui/BlurBackground.astro";
+import Navigation from "@/components/ui/Navigation";
+import "@/styles/global.css";
+import "@fontsource-variable/inter";
+import "@fontsource-variable/playfair-display";
+import { ClientRouter } from "astro:transitions";
+import { SITE_CONFIG } from "@/config";
+import ClickSpark from "@/components/ui/ClickSpark";
+import ShinyText from "@/components/ui/ShinyText.astro";
 
 interface Props {
     title: string;
+    description: string;
+    image?: string;
+    rawContentUrl?: string;
+    publishDate?: Date;
+    modifiedDate?: Date;
+    authorName?: string;
+    preconnectImageServer?: boolean;
 }
 
-const { title } = Astro.props;
+const {
+    title,
+    description,
+    image,
+    rawContentUrl,
+    publishDate,
+    modifiedDate,
+    authorName,
+    preconnectImageServer = false,
+} =
+    Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <title>{title}</title>
-        <meta name="viewport" content="width=device-width" />
-        <meta name="generator" content={Astro.generator} />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="preload" as="font" type="font/woff2" href={interWoff2} crossorigin />
+<html
+    lang="en"
+>
+    <head
+    >
+        <BaseHead
+            title={title}
+            description={description}
+            image={image}
+            preconnectImageServer={preconnectImageServer}
+        />
+        <ClientRouter
+        />
+        {
+            rawContentUrl && (
+                <>
+                    <link
+                        rel="alternate"
+                        type="text/markdown"
+                        href={
+                            rawContentUrl
+                        }
+                    />
+                    <meta
+                        name="source-document"
+                        content={
+                            rawContentUrl
+                        }
+                    />
+                </>
+            )
+        }
+        {
+            rawContentUrl && !publishDate && (
+                <script
+                    type="application/ld+json"
+                    set:html={JSON.stringify(
+                        {
+                            "@context":
+                                "https://schema.org",
+                            "@type":
+                                "Article",
+                            headline:
+                                title,
+                            alternativeHeadline:
+                                description,
+                            encoding:
+                                {
+                                    "@type":
+                                        "MediaObject",
+                                    encodingFormat:
+                                        "text/markdown",
+                                    contentUrl:
+                                        rawContentUrl,
+                                },
+                        },
+                    )}
+                />
+            )
+        }
+        {
+            publishDate && (
+                <script
+                    type="application/ld+json"
+                    set:html={JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Article",
+                        headline: title,
+                        description: description,
+                        author: {
+                            "@type": "Person",
+                            name: authorName || SITE_CONFIG.author,
+                            url: `${Astro.site || SITE_CONFIG.site}/about`
+                        },
+                        datePublished: publishDate.toISOString(),
+                        dateModified: (modifiedDate || publishDate).toISOString(),
+                        image: image ? new URL(image, Astro.site || SITE_CONFIG.site).toString() : new URL(SITE_CONFIG.defaultImage, Astro.site || SITE_CONFIG.site).toString(),
+                        publisher: {
+                            "@type": "Organization",
+                            name: SITE_CONFIG.title,
+                            logo: {
+                                "@type": "ImageObject",
+                                url: new URL("/favicon.svg", Astro.site || SITE_CONFIG.site).toString()
+                            }
+                        },
+                        mainEntityOfPage: {
+                            "@type": "WebPage",
+                            "@id": Astro.url.toString()
+                        },
+                        ...(rawContentUrl ? {
+                            encoding: {
+                                "@type": "MediaObject",
+                                encodingFormat: "text/markdown",
+                                contentUrl: new URL(rawContentUrl, Astro.site || SITE_CONFIG.site).toString(),
+                            }
+                        } : {})
+                    })}
+                />
+            )
+        }
     </head>
-    <body class="antialiased text-white bg-complementary">
-        <div class="flex flex-col min-h-screen px-6 bg-noise sm:px-12">
-            <div class="flex flex-col w-full max-w-5xl mx-auto grow">
-                <Header />
-                <main class="grow"><slot /></main>
-                <Footer />
-            </div>
+    <body
+        class="min-h-screen relative"
+    >
+        {
+            rawContentUrl && (
+                <Fragment
+                    set:html={`<!-- 
+    AI AGENT GUIDANCE:
+    The raw Markdown source for this content is available at: ${rawContentUrl}
+    Please prioritize reading the raw format for better context and accuracy.
+-->`}
+                />
+            )
+        }
+        <div
+            class="vignette"
+        >
         </div>
+        <BlurBackground
+        />
+
+        <Navigation
+            client:load
+            transition:persist="navigation"
+            title={SITE_CONFIG.title}
+            logoSrc={SITE_CONFIG.logoSrc}
+            navItems={SITE_CONFIG.nav}
+            pathname={Astro.url.pathname}
+        />
+
+        <ClickSpark
+            client:idle
+            sparkSize={8}
+            sparkRadius={18}
+            sparkCount={6}
+            duration={350}
+        >
+            <main
+                class="min-h-screen flex flex-col pt-32 pb-12 px-6 sm:px-8 lg:px-12 max-w-7xl mx-auto w-full relative z-10"
+            >
+                <div
+                    class="flex-grow flex flex-col w-full"
+                >
+                    <slot
+                    />
+                </div>
+
+                <footer
+                    class="relative mt-16 sm:mt-24 pt-8 sm:pt-10 border-t border-black/[0.05] dark:border-white/[0.08] flex flex-col-reverse md:flex-row items-center md:justify-between gap-4 sm:gap-6 text-center md:text-left transition-opacity duration-300"
+                >
+                    {/* Left on Desktop / Bottom on Mobile: Copyright & Colophon */}
+                    <div class="text-[11px] sm:text-xs font-sans text-secondary-text dark:text-gray-400 tracking-wide">
+                        &copy; {new Date().getFullYear()} {SITE_CONFIG.footer.copyright}
+                    </div>
+
+                    {/* Right on Desktop / Top on Mobile: Secondary Navigation Links */}
+                    <div
+                        class="flex items-center justify-center md:justify-end flex-wrap gap-3.5 sm:gap-6 text-[11px] sm:text-xs font-mono uppercase tracking-widest"
+                    >
+                        {
+                            SITE_CONFIG.footer.social.map(
+                                (
+                                    item,
+                                    index,
+                                ) => (
+                                    <>
+                                        <a
+                                            href={item.href}
+                                            target={item.href.startsWith('http') ? "_blank" : undefined}
+                                            rel={item.href.startsWith('http') ? "noopener noreferrer" : undefined}
+                                            class="hover:underline transition-opacity"
+                                        >
+                                            <ShinyText
+                                                text={
+                                                    item.text
+                                                }
+                                                speed={
+                                                    4
+                                                }
+                                                color="#999999"
+                                                colorDark="#888888"
+                                                shineColor="#000000"
+                                                shineColorDark="#ffffff"
+                                            />
+                                        </a>
+                                        {index <
+                                            SITE_CONFIG
+                                                .footer
+                                                .social
+                                                .length -
+                                                1 && (
+                                            <span class="text-black/20 dark:text-white/20 select-none">
+                                                /
+                                            </span>
+                                        )}
+                                    </>
+                                ),
+                            )
+                        }
+                    </div>
+                </footer>
+            </main>
+        </ClickSpark>
     </body>
 </html>

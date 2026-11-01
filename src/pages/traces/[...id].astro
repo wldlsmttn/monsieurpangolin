@@ -1,0 +1,191 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import { SITE_CONFIG } from "@/config";
+import {
+    getCollection,
+    render,
+} from "astro:content";
+import CityRoadMap from "@/components/traces/CityRoadMap";
+import {
+    RiArrowLeftLine,
+} from "@remixicon/react";
+import TextReveal from "@/components/ui/TextReveal";
+import "katex/dist/katex.min.css";
+
+export async function getStaticPaths() {
+    const traces =
+        await getCollection(
+            "traces",
+        );
+    return traces.map(
+        (
+            trace: any,
+        ) => ({
+            params: {
+                id: trace.id,
+            },
+            props: {
+                trace,
+            },
+        }),
+    );
+}
+
+const {
+    trace,
+} =
+    Astro.props;
+const {
+    Content,
+} =
+    await render(
+        trace,
+    );
+---
+
+<Layout
+    title={`${trace.data.title.replace(/^SYS_TRACE:\s*/i, "")} // ${SITE_CONFIG.title}`}
+    description={`Trace record from ${trace.data.baseline.environment} at ${trace.data.baseline.coordinates}`}
+>
+    {/* Ambient Background Map */}
+    <div
+        class="fixed inset-0 z-0 pointer-events-none opacity-10 dark:opacity-[0.18] map-blend transition-opacity duration-1000"
+        style="mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 40%, transparent 85%); -webkit-mask-image: radial-gradient(ellipse 90% 90% at 50% 50%, black 40%, transparent 85%);"
+    >
+        <CityRoadMap
+            client:load
+            siteName={trace.data.site_name}
+            coordinates={trace.data.baseline.coordinates}
+            className="w-full h-full object-cover sm:object-contain"
+        />
+    </div>
+
+    <!-- Background Reveal Watermark -->
+    <div
+        class="hidden md:flex fixed top-0 right-0 h-screen z-[-10] select-none pointer-events-none overflow-hidden items-center justify-center"
+    >
+        <TextReveal
+            client:load
+            text="Trace"
+            type="char"
+            className="font-bold text-black/[0.03] dark:text-white/[0.10] text-[8vh] sm:text-[10vh] lg:text-[18vh] leading-none whitespace-nowrap"
+            style={{
+                writingMode: "vertical-rl",
+                textOrientation: "mixed",
+            }}
+        />
+    </div>
+
+    <article
+        class="font-sans relative z-10 pt-1 sm:pt-2 md:pt-4 pb-24 max-w-6xl mx-auto w-full flex flex-col md:flex-row gap-8 md:gap-12 lg:gap-16 items-start"
+    >
+        {/* Left Column: Navigation & Telemetry Docket (Comfortable width, zero line-wrapping) */}
+        <aside
+            class="w-full md:w-48 lg:w-52 xl:w-56 flex-shrink-0 flex flex-col md:sticky md:top-36 md:self-start"
+        >
+            <a
+                href={`/traces?year=${trace.id.split("/")[0]}&id=${trace.id}`}
+                class="inline-flex items-center gap-2 text-xs font-mono tracking-widest text-secondary-text dark:text-zinc-300 hover:text-primary-text dark:hover:text-white transition-all duration-300 uppercase opacity-85 dark:opacity-100 group"
+            >
+                <RiArrowLeftLine
+                    className="w-3.5 h-3.5 transition-transform duration-300 group-hover:-translate-x-1"
+                />
+                <span>RETURN</span>
+            </a>
+
+            {/* Telemetry Docket (Structured archival metadata with generous breathing room) */}
+            <div
+                class="hidden md:flex flex-col gap-6 font-mono pt-6 mt-6 border-t border-black/5 dark:border-white/5"
+            >
+                <div class="flex flex-col gap-1.5">
+                    <span class="text-[10px] uppercase tracking-widest text-secondary-text/70 dark:text-zinc-400">TIMELINE</span>
+                    <span class="text-xs text-primary-text dark:text-zinc-200 tracking-wide font-medium whitespace-nowrap">{trace.data.date}</span>
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                    <span class="text-[10px] uppercase tracking-widest text-secondary-text/70 dark:text-zinc-400">COORDINATES</span>
+                    <span class="text-xs text-primary-text dark:text-zinc-200 tracking-wide font-medium whitespace-nowrap">{trace.data.baseline.coordinates}</span>
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                    <span class="text-[10px] uppercase tracking-widest text-secondary-text/70 dark:text-zinc-400">ENVIRONMENT</span>
+                    <span class="text-xs text-primary-text dark:text-zinc-200 tracking-wide font-medium whitespace-nowrap">{trace.data.baseline.environment}</span>
+                </div>
+
+                <div class="flex flex-col gap-1.5">
+                    <span class="text-[10px] uppercase tracking-widest text-secondary-text/70 dark:text-zinc-400">LOG_ID</span>
+                    <span class="text-xs text-secondary-text/80 dark:text-zinc-400 tracking-wide whitespace-nowrap">{trace.id}</span>
+                </div>
+            </div>
+        </aside>
+
+        {/* Right Column: Main Content Stream (Aligns directly with index content stream) */}
+        <main
+            class="flex-1 w-full min-w-0 pt-0"
+        >
+            {/* Header: Site Eyebrow + Title */}
+            <header class="mb-8 md:mb-10">
+                <div class="flex items-center gap-2 mb-2 sm:mb-2.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-black/40 dark:bg-white/40"></span>
+                    <span class="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-secondary-text dark:text-zinc-400">
+                        {trace.data.site_name || "Spatial Record"}
+                    </span>
+                </div>
+
+                <h1
+                    class="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-medium tracking-tight text-primary-text leading-tight"
+                    style={`view-transition-name: trace-title-${trace.id}`}
+                >
+                    {trace.data.title.replace(/^SYS_TRACE:\s*/i, "")}
+                </h1>
+            </header>
+
+            {/* Mobile Metadata (Hidden on Desktop) */}
+            <div class="block md:hidden mb-8 pb-4 border-b border-black/5 dark:border-white/10 font-mono text-[11px] text-secondary-text dark:text-zinc-300">
+                <div class="flex flex-wrap items-center gap-x-3.5 gap-y-2">
+                    <span>{trace.data.date}</span>
+                    <span class="text-secondary-text/40 dark:text-zinc-500">/</span>
+                    <span>{trace.data.baseline.coordinates}</span>
+                    <span class="text-secondary-text/40 dark:text-zinc-500">/</span>
+                    <span class="text-primary-text dark:text-zinc-200 font-medium">{trace.data.baseline.environment}</span>
+                </div>
+            </div>
+
+            {/* Prose Content */}
+            <div
+                class="prose dark:prose-invert max-w-2xl lg:max-w-3xl prose-headings:font-sans prose-headings:font-medium prose-headings:tracking-tight prose-a:text-black dark:prose-a:text-white prose-a:underline prose-a:decoration-1 prose-a:underline-offset-4 prose-blockquote:not-italic prose-blockquote:border-l-2 prose-blockquote:pl-6 prose-blockquote:border-black/20 dark:prose-blockquote:border-white/20 prose-p:font-light prose-p:opacity-90 prose-p:tracking-wide prose-p:leading-relaxed prose-p:text-[15px] sm:prose-p:text-base prose-img:rounded-xl"
+            >
+                <Content />
+            </div>
+
+            {/* Tags */}
+            {trace.data.tags && trace.data.tags.length > 0 && (
+                <div class="mt-12 flex flex-wrap gap-2 not-prose">
+                    {trace.data.tags.map((tag: string) => (
+                        <span class="inline-flex items-center gap-1.5 px-3 py-1 bg-black/[0.04] dark:bg-white/[0.08] hover:dark:bg-white/[0.12] rounded-full text-xs font-mono text-secondary-text dark:text-zinc-200 border border-black/5 dark:border-white/10 transition-colors">
+                            <span class="text-secondary-text/50 dark:text-zinc-400">#</span>
+                            <span class="font-medium tracking-wide">{tag}</span>
+                        </span>
+                    ))}
+                </div>
+            )}
+
+            {/* Colophon / End of Log */}
+            <div class="mt-16 sm:mt-20 pt-6 border-t border-black/5 dark:border-white/10 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono text-secondary-text/75 dark:text-zinc-400 uppercase tracking-widest">
+                <span>LOG_STATUS // ARCHIVED</span>
+                <span class="text-[10px] text-secondary-text/65 dark:text-zinc-400">MAP DATA // © OPENSTREETMAP</span>
+                <span>// EOF</span>
+            </div>
+        </main>
+    </article>
+</Layout>
+
+<style is:global>
+    /* Simple image wrapper without background/card effects */
+    .traces-image-wrapper {
+        margin-top: 3.5rem;
+        margin-bottom: 3.5rem;
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+</style>

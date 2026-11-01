@@ -1,43 +1,34 @@
-# Astro on Netlify Platform Starter
+# Monsieur Pangolin
 
-[Live Demo](https://astro-platform-starter.netlify.app/)
+Personal site built on the [Growing Galaxy](https://github.com/OwenCedaric/GrowingGalaxy) theme (MIT), adapted to deploy on **Netlify**.
 
-A modern starter based on Astro.js, Tailwind, and [Netlify Core Primitives](https://docs.netlify.com/core/overview/#develop) (Edge Functions, Image CDN, Blobs).
+- Blog (MDX + KaTeX), photo gallery, travel "traces" with maps, projects, about page
+- Static search with [Pagefind](https://pagefind.app/)
+- Astro 7, React 19, Tailwind CSS 4, Motion
 
-## Astro Commands
+## Commands
 
-All commands are run from the root of the project, from a terminal:
+| Command | Action |
+| :-- | :-- |
+| `pnpm install` | Install dependencies |
+| `pnpm dev` | Dev server at `localhost:4321` |
+| `pnpm build` | Build to `./dist/` and generate the Pagefind index |
+| `pnpm preview` | Preview the production build |
+| `pnpm check` | Type check |
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+Requires Node.js 22.22+ and pnpm.
 
 ## Deploying to Netlify
 
-[![Deploy to Netlify](https://www.netlify.com/img/deploy/button.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/netlify-templates/astro-platform-starter)
+`netlify.toml` sets the build command (`pnpm run build`), the publish directory (`dist`) and the Node version. Netlify detects pnpm from `pnpm-lock.yaml`.
 
-## Developing Locally
+## Customising
 
-| Prerequisites                                                                |
-| :--------------------------------------------------------------------------- |
-| [Node.js](https://nodejs.org/) v18.20.8+.                                    |
-| (optional) [nvm](https://github.com/nvm-sh/nvm) for Node version management. |
+- **Site settings** (title, URL, navigation, footer, social links): `src/config.ts`. Update `site` to your real domain.
+- **Logo / favicon**: `public/favicon.svg` (used as a mask, so a single-colour shape works best).
+- **Content**: `src/content/` — `blog/`, `photos/`, `traces/`, `projects/`, `pages/about.md`. The blog, gallery and traces entries are the theme's sample content; replace them with your own.
+- Markdown extensions are documented in `MARKDOWN_SYNTAX.md`.
 
-1. Clone this repository, then run `npm install` in its root directory.
+## Differences from the upstream theme
 
-2. Recommended: link your local repository to a Netlify project. This will ensure you're using the same runtime version for both local development and your deployed project.
-
-```
-netlify link
-```
-
-3. Run the Astro.js development server:
-
-```
-npm run dev
-```
+The upstream theme ships a Cloudflare Worker that serves AI semantic search (MCP + Cloudflare Vectorize). That backend does not run on Netlify, so it was removed: the Worker, `wrangler.json`, the embedding script and the Cloudflare deploy workflow. The "AI Intel" search tab is hidden (`aiSearch: false` in `src/config.ts`); keyword search via Pagefind works as before.
