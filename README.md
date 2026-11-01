@@ -26,7 +26,7 @@ Requires Node.js 22.22+ and pnpm.
 
 - **Site settings** (title, URL, navigation, footer, social links): `src/config.ts`. Update `site` to your real domain.
 - **Logo / favicon**: `public/favicon.svg` (used as a mask, so a single-colour shape works best).
-- **Content**: `src/content/` — `blog/`, `photos/`, `traces/`, `projects/`, `pages/about.md`. The blog, gallery and traces entries are the theme's sample content; replace them with your own.
+- **Content**: `src/content/` — `blog/`, `photos/`, `traces/`, `projects/`, `pages/about.md`. To write a blog post, copy `src/content/blog/_modele-article.md` to `src/content/blog/<year>/<slug>.md` (files starting with `_` are ignored).
 - Markdown extensions are documented in `MARKDOWN_SYNTAX.md`.
 
 ## Differences from the upstream theme
