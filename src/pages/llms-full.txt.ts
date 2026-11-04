@@ -7,35 +7,36 @@ export async function GET() {
     const pages = await getCollection('pages');
     const projects = await getCollection('projects');
     const photos = await getCollection('photos');
-    const traces = await getCollection('traces');
+    const courses = await getCollection('courses');
+    const selection = await getCollection('selection');
 
-    const content = `\uFEFF# ${SITE_CONFIG.title} Full Content Index
+    const content = `\uFEFF# ${SITE_CONFIG.title} — index complet
 
-> This manifest provides a comprehensive index of all content on ${SITE_CONFIG.title}, with links to both the web version and the raw markdown version for optimized AI consumption.
+> Index de tous les contenus de ${SITE_CONFIG.title}, avec la version web et la version Markdown brute.
 
-## Blog Posts
+## Articles
 
-${blogs.map(entry => `- [${entry.data.title}](${site}/blog/${entry.id}) ([Raw Markdown](${site}/raw/blog/${entry.id}.md))`).join('\n')}
+${blogs.map(entry => `- [${entry.data.title}](${site}/blog/${entry.id}) ([Markdown](${site}/raw/blog/${entry.id}.md))`).join('\n')}
 
 ## Pages
 
-${pages.map(entry => `- [${entry.data.title}](${site}/${entry.id}) ([Raw Markdown](${site}/raw/pages/${entry.id}.md))`).join('\n')}
+${pages.map(entry => `- [${entry.data.title}](${site}/${entry.id}) ([Markdown](${site}/raw/pages/${entry.id}.md))`).join('\n')}
 
-## Projects
+## Projets
 
-${projects.map(entry => `- [${entry.data.title}](${site}/projects#${entry.id}) ([Raw Markdown](${site}/raw/projects/${entry.id}.md)) - ${entry.data.description || ''}`).join('\n')}
+${projects.map(entry => `- [${entry.data.title}](${entry.data.url || `${site}/projets`}) - ${entry.data.description || ''}`).join('\n')}
 
-## Gallery & Photos (Web Only)
+## Galerie
 
-${photos.map(entry => `- [${entry.data.name}](${site}/gallery/2025/${entry.id.toLowerCase()})`).join('\n')}
+${photos.map(entry => `- [${entry.data.name}](${site}/galerie/${entry.id})`).join('\n')}
 
-## Traces
+## Courses
 
-${traces.map(entry => `- [Trace: ${entry.data.title.replace(/^SYS_TRACE:\s*/i, '')}](${site}/traces/${entry.id}) ([Raw Markdown](${site}/raw/traces/${entry.id}.md))`).join('\n')}
+${courses.map(entry => `- [${entry.data.nom}](${site}/courses/${entry.id}) (${entry.data.sport}, ${entry.data.lieu}) ([Markdown](${site}/raw/courses/${entry.id}.md))`).join('\n')}
 
-## Elsewhere (External Channels)
+## Ma sélection
 
-${(SITE_CONFIG.elsewhere || []).map(entry => `- [${entry.name}${entry.handle ? ` (${entry.handle})` : ''}](${entry.url})`).join('\n')}
+${selection.map(entry => `- ${entry.data.nom}${entry.data.detail ? ` (${entry.data.detail})` : ''} — ${entry.data.categorie}`).join('\n')}
 `;
 
     return new Response(content, {

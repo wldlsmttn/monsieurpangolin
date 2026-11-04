@@ -19,7 +19,7 @@ interface NavigationProps {
 export default function Navigation({ title, logoSrc, navItems, pathname = "" }: NavigationProps) {
     const isDark = useTheme();
     const [currentPath, setCurrentPath] = useState(pathname);
-    const [isSearchActive, setIsSearchActive] = useState(currentPath.includes("/search"));
+    const [isSearchActive, setIsSearchActive] = useState(currentPath.includes("/recherche"));
     const [searchQuery, setSearchQuery] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -47,7 +47,7 @@ export default function Navigation({ title, logoSrc, navItems, pathname = "" }: 
 
     // Focus input when search becomes active (only if it wasn't active on mount)
     useEffect(() => {
-        if (isSearchActive && inputRef.current && !currentPath.includes("/search")) {
+        if (isSearchActive && inputRef.current && !currentPath.includes("/recherche")) {
             setTimeout(() => inputRef.current?.focus(), 50);
         }
     }, [isSearchActive, currentPath]);
@@ -70,7 +70,7 @@ export default function Navigation({ title, logoSrc, navItems, pathname = "" }: 
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (searchQuery.trim()) {
-            window.location.href = `/search?q=${encodeURIComponent(searchQuery)}`;
+            window.location.href = `/recherche?q=${encodeURIComponent(searchQuery)}`;
         }
     };
 
@@ -83,7 +83,7 @@ export default function Navigation({ title, logoSrc, navItems, pathname = "" }: 
                     {/* 1. Logo (Always Top Left) */}
                     <div className="col-start-1 row-start-1 flex items-center shrink-0 order-1">
                         {logoSrc ? (
-                            <a href="/" className="block relative group outline-none" aria-label="Home">
+                            <a href="/" className="block relative group outline-none" aria-label="Accueil">
                                 <div
                                     className="h-[18px] sm:h-[22px] aspect-[1.446] bg-current text-primary-text dark:text-white opacity-85 dark:opacity-100 hover:scale-[1.04] transition-all duration-300 ease-out" 
                                     style={{ 
@@ -110,7 +110,7 @@ export default function Navigation({ title, logoSrc, navItems, pathname = "" }: 
                         <button
                             onClick={() => setIsSearchActive(!isSearchActive)}
                             className="opacity-60 hover:opacity-100 dark:opacity-90 dark:hover:opacity-100 transition-opacity cursor-pointer text-primary-text dark:text-white md:hidden"
-                            aria-label={isSearchActive ? "Close search" : "Open search"}
+                            aria-label={isSearchActive ? "Fermer la recherche" : "Ouvrir la recherche"}
                         >
                             {isSearchActive ? <RiCloseLine className="w-4 h-4" /> : <RiSearchLine className="w-4 h-4" />}
                         </button>
@@ -173,7 +173,7 @@ export default function Navigation({ title, logoSrc, navItems, pathname = "" }: 
                                     <button
                                         onClick={() => setIsSearchActive(true)}
                                         className="hidden md:block opacity-60 hover:opacity-100 dark:opacity-90 dark:hover:opacity-100 transition-opacity cursor-pointer text-primary-text dark:text-white shrink-0"
-                                        aria-label="Open search"
+                                        aria-label="Ouvrir la recherche"
                                     >
                                         <RiSearchLine className="w-4 h-4" />
                                     </button>
@@ -191,7 +191,7 @@ export default function Navigation({ title, logoSrc, navItems, pathname = "" }: 
                                             type="text"
                                             value={searchQuery}
                                             onChange={(e) => setSearchQuery(e.target.value)}
-                                            placeholder="SEARCH..."
+                                            placeholder="RECHERCHER…"
                                             className="flex-1 bg-transparent border-none outline-none text-primary-text dark:text-white caret-black dark:caret-white font-mono text-base md:text-[11px] lg:text-xs uppercase tracking-widest placeholder-secondary-text/75 dark:placeholder-white/60 focus:placeholder-transparent min-w-0"
                                             autoComplete="off"
                                             spellCheck="false"
@@ -200,7 +200,7 @@ export default function Navigation({ title, logoSrc, navItems, pathname = "" }: 
                                             <button
                                                 type="submit"
                                                 className="opacity-50 hover:opacity-100 dark:opacity-75 dark:hover:opacity-100 transition-opacity cursor-pointer text-primary-text dark:text-white"
-                                                aria-label="Submit search"
+                                                aria-label="Lancer la recherche"
                                             >
                                                 <RiSearchLine className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
                                             </button>
@@ -208,7 +208,7 @@ export default function Navigation({ title, logoSrc, navItems, pathname = "" }: 
                                                 type="button"
                                                 onClick={() => setIsSearchActive(false)}
                                                 className="hidden md:block opacity-50 hover:opacity-100 dark:opacity-75 dark:hover:opacity-100 transition-opacity cursor-pointer text-primary-text dark:text-white"
-                                                aria-label="Close search"
+                                                aria-label="Fermer la recherche"
                                             >
                                                 <RiCloseLine className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
                                             </button>

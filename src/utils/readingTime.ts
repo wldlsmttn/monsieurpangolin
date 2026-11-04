@@ -3,5 +3,5 @@ export function getReadingTime(text: string): string {
     const noOfWords = text.split(/\s/g).length;
     const minutes = noOfWords / wordsPerMinute;
     const readTime = Math.ceil(minutes);
-    return `${readTime} min read`;
+    return `${readTime} min de lecture`;
 }

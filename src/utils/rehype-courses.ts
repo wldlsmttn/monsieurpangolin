@@ -1,11 +1,11 @@
 import { visit } from 'unist-util-visit';
 import { toString } from 'hast-util-to-string';
 
-export default function rehypeTracesBrutalism() {
+export default function rehypeCourses() {
     return (tree: any, file: any) => {
         const filePath = file.path || (file.history && file.history[0]) || '';
-        // Only run for traces
-        if (!filePath.includes('/content/traces/')) {
+        // Only run for courses
+        if (!filePath.includes('/content/courses/')) {
             return;
         }
 

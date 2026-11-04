@@ -1,0 +1,20 @@
+# Ma sélection : une entrée par objet, livre, etc.
+# Chaque entrée commence par "- id:" (identifiant unique, sans espaces).
+# Exemple, à copier sous la ligne "[]" en supprimant les "#" puis en supprimant la ligne "[]" :
+#
+# - id: montre-gps
+#   categorie: Matériel de course        # les rubriques s'affichent dans l'ordre défini
+#                                        # dans src/config.ts (selection.categories)
+#   nom: Ma montre GPS
+#   detail: Marque, modèle               # (optionnel) marque, auteur…
+#   avis: Ce que j'en pense en une ou deux phrases.   # (optionnel)
+#   image: https://exemple.com/image.jpg  # (optionnel) ou /selection/montre.jpg (fichier dans public/selection/)
+#   lien: https://exemple.com/lien-affilie
+#   affilie: true                         # (optionnel, true par défaut) false si ce n'est pas un lien affilié
+#
+# - id: courir-echenoz
+#   categorie: Livres
+#   nom: Courir
+#   detail: Jean Echenoz
+#   lien: https://exemple.com/lien-affilie
+[]

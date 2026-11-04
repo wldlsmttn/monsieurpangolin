@@ -11,13 +11,13 @@ const filteredHeadings = headings.filter((h) => h.depth === 2);
 import { RiArrowUpLine } from "@remixicon/react";
 ---
 
-<nav class="toc-container" aria-label="Table of Contents">
+<nav class="toc-container" aria-label="Sommaire">
   <div class="toc-sticky-wrapper">
     {filteredHeadings.length > 0 && (
       <>
         <div class="toc-header">
           <span class="toc-line"></span>
-          <span class="toc-title">Contents</span>
+          <span class="toc-title">Sommaire</span>
         </div>
         <ul class="toc-list mb-6">
           {filteredHeadings.map((heading) => (
@@ -40,7 +40,7 @@ import { RiArrowUpLine } from "@remixicon/react";
         <span class="transition-transform duration-300 group-hover:-translate-y-0.5">
           <RiArrowUpLine className="w-3.5 h-3.5" />
         </span>
-        <span>Top</span>
+        <span>Haut</span>
       </button>
     </div>
   </div>

@@ -7,14 +7,14 @@ export const PhotoCard: React.FC<{ photo: PhotoEntry }> = ({ photo }) => {
 
     return (
         <a
-            href={`/gallery/${photo.slug}`}
+            href={`/galerie/${photo.slug}`}
             className="group block relative overflow-hidden rounded-xl border border-black/5 dark:border-white/10 bg-white/40 dark:bg-black/40 backdrop-blur-sm transition-all duration-300 hover:border-black/20 dark:hover:border-white/20 hover:-translate-y-1 hover:shadow-md dark:hover:shadow-black/40"
         >
             {/* 16:10 Compact Cover Container */}
             <div className="relative w-full aspect-[16/10] overflow-hidden bg-black/5 dark:bg-white/5">
                 {/* Frame count badge */}
                 <div className="absolute top-2.5 right-2.5 z-10 font-mono text-[10px] tracking-wider bg-black/60 dark:bg-black/75 backdrop-blur-md text-white/90 px-2 py-0.5 rounded-md border border-white/10 pointer-events-none">
-                    // {String(photo.images.length).padStart(2, '0')} {photo.images.length === 1 ? 'FRAME' : 'FRAMES'}
+                    // {String(photo.images.length).padStart(2, '0')} {photo.images.length === 1 ? 'PHOTO' : 'PHOTOS'}
                 </div>
 
                 <img

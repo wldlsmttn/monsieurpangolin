@@ -13,7 +13,7 @@ import matter from 'gray-matter';
 
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import rehypeTracesBrutalism from './src/utils/rehype-traces-brutalism.ts';
+import rehypeCourses from './src/utils/rehype-courses.ts';
 
 /**
  * @param {Date | string | number | undefined} date
@@ -136,22 +136,22 @@ async function processSitemapFile(filePath, collection, defaultLastMod, latestBl
             if (pathname.startsWith('/blog/')) {
                 currentCollection = 'blog';
                 slug = pathname.substring(6);
-            } else if (pathname.startsWith('/gallery/')) {
+            } else if (pathname.startsWith('/galerie/')) {
                 currentCollection = 'photos';
                 slug = pathname.substring(9);
-            } else if (pathname.startsWith('/traces/')) {
-                currentCollection = 'traces';
-                slug = pathname.substring(8);
+            } else if (pathname.startsWith('/courses/')) {
+                currentCollection = 'courses';
+                slug = pathname.substring(9);
             } else if (pathname === '/blog' || pathname === '/blog/') {
                 lastmod = latestBlogDate;
                 slug = '';
-            } else if (pathname === '/gallery' || pathname === '/gallery/') {
+            } else if (pathname === '/galerie' || pathname === '/galerie/') {
                 lastmod = latestGalleryDate;
                 slug = '';
-            } else if (pathname === '/traces' || pathname === '/traces/') {
+            } else if (pathname === '/courses' || pathname === '/courses/') {
                 lastmod = latestTracesDate;
                 slug = '';
-            } else if (pathname === '/search' || pathname === '/projects' || pathname === '/elsewhere' || pathname === '') {
+            } else if (pathname === '/recherche' || pathname === '/projets' || pathname === '/selection' || pathname === '') {
                 slug = '';
             } else {
                 currentCollection = 'pages';
@@ -223,7 +223,7 @@ export default defineConfig({
     markdown: {
         processor: unified({
             remarkPlugins: [remarkMath],
-            rehypePlugins: [rehypeKatex, rehypeTracesBrutalism]
+            rehypePlugins: [rehypeKatex, rehypeCourses]
         })
     },
     integrations: [mdx(), sitemap({
@@ -237,14 +237,14 @@ export default defineConfig({
             },
             'gallery': (item) => {
                 const urlPath = new URL(item.url).pathname;
-                if (urlPath === '/gallery' || urlPath === '/gallery/' || urlPath.startsWith('/gallery/')) {
+                if (urlPath === '/galerie' || urlPath === '/galerie/' || urlPath.startsWith('/galerie/')) {
                     return item;
                 }
                 return undefined;
             },
-            'traces': (item) => {
+            'courses': (item) => {
                 const urlPath = new URL(item.url).pathname;
-                if (urlPath === '/traces' || urlPath === '/traces/' || urlPath.startsWith('/traces/')) {
+                if (urlPath === '/courses' || urlPath === '/courses/' || urlPath.startsWith('/courses/')) {
                     return item;
                 }
                 return undefined;
@@ -268,16 +268,16 @@ export default defineConfig({
                     const today = formatDate(new Date()) || '';
                     const latestBlogDate = formatDate(await getLatestDateFromDir('src/content/blog')) || today;
                     const latestGalleryDate = formatDate(await getLatestDateFromDir('src/content/photos')) || today;
-                    const latestTracesDate = formatDate(await getLatestDateFromDir('src/content/traces')) || today;
+                    const latestTracesDate = formatDate(await getLatestDateFromDir('src/content/courses')) || today;
 
                     const blogSitemap = fileURLToPath(new URL('sitemap-blog-0.xml', dir));
                     const gallerySitemap = fileURLToPath(new URL('sitemap-gallery-0.xml', dir));
-                    const tracesSitemap = fileURLToPath(new URL('sitemap-traces-0.xml', dir));
+                    const tracesSitemap = fileURLToPath(new URL('sitemap-courses-0.xml', dir));
                     const defaultSitemap = fileURLToPath(new URL('sitemap-pages-0.xml', dir));
 
                     await processSitemapFile(blogSitemap, 'blog', today, latestBlogDate, latestGalleryDate, latestTracesDate, today);
                     await processSitemapFile(gallerySitemap, 'photos', today, latestBlogDate, latestGalleryDate, latestTracesDate, today);
-                    await processSitemapFile(tracesSitemap, 'traces', today, latestBlogDate, latestGalleryDate, latestTracesDate, today);
+                    await processSitemapFile(tracesSitemap, 'courses', today, latestBlogDate, latestGalleryDate, latestTracesDate, today);
                     await processSitemapFile(defaultSitemap, 'pages', today, latestBlogDate, latestGalleryDate, latestTracesDate, today);
                 } catch (err) {
                     console.error('Error post-processing sitemap chunks:', err);

@@ -1,7 +1,7 @@
 export const SITE_CONFIG = {
     title: "Monsieur Pangolin",
     logoSrc: "/favicon.svg",
-    description: "A curated space for digital galleries and storytelling.",
+    description: "Blog, photos, courses et sélection de Monsieur Pangolin.",
     author: "Monsieur Pangolin",
     authorPhonetic: "",
     signature: "MP",
@@ -14,8 +14,9 @@ export const SITE_CONFIG = {
     aiSearch: false,
     nav: [
         { text: "Blog", href: "/blog" },
-        { text: "Gallery", href: "/gallery" },
-        { text: "Traces", href: "/traces" },
+        { text: "Galerie", href: "/galerie" },
+        { text: "Courses", href: "/courses" },
+        { text: "Sélection", href: "/selection" },
     ],
     homepage: {
         harmonicSystem: {
@@ -23,30 +24,29 @@ export const SITE_CONFIG = {
             speed: 0.0042
         },
         links: [
-            { text: "Read the blog", href: "/blog" },
-            { text: "Explore the Traces", href: "/traces" }
+            { text: "Lire le blog", href: "/blog" },
+            { text: "Voir mes courses", href: "/courses" }
         ]
     },
     footer: {
         social: [
-            { text: "Projects", href: "/projects" },
-            { text: "Elsewhere", href: "/elsewhere" }
+            { text: "Projets", href: "/projets" },
+            { text: "À propos", href: "/a-propos" }
         ],
-        copyright: "Monsieur Pangolin. Theme: Growing Galaxy."
+        copyright: "Monsieur Pangolin. Thème : Growing Galaxy."
     },
-    elsewhere: [
-        {
-            name: "GitHub",
-            handle: "wldlsmttn",
-            url: "https://github.com/wldlsmttn",
-        }
-    ],
+    selection: {
+        // Ordre d'affichage des rubriques de /selection (les autres catégories suivent)
+        categories: ["Matériel de course", "Livres"],
+        // Passe à true si tu utilises le programme Partenaires Amazon : ajoute la mention obligatoire
+        partenaireAmazon: false,
+    },
     articleCopyright: {
         enabled: true,
-        declaration: "No part of this article may be reproduced, distributed, or transmitted in any form or by any means without the prior written permission of the author.",
+        declaration: "Toute reproduction, diffusion ou transmission de cet article, sous quelque forme que ce soit, est interdite sans l’autorisation écrite préalable de l’auteur.",
         proof: {
             enabled: false,
-            linkText: "Verify Authenticity",
+            linkText: "Vérifier l’authenticité",
             baseUrl: "https://proofs.ceda.is",
             mode: "dynamic" // 'static' uses baseUrl as is, 'dynamic' appends '/blog/[slug]'
         }

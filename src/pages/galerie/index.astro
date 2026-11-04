@@ -33,7 +33,7 @@ const ldJsons =
                     .images[0]
                     .url,
             license: `${siteUrl}/license`,
-            acquireLicensePage: `${siteUrl}/about`,
+            acquireLicensePage: `${siteUrl}/a-propos`,
             creditText:
                 photo.author,
             creator:
@@ -42,7 +42,7 @@ const ldJsons =
                         "Person",
                     name: photo.author,
                 },
-            copyrightNotice: `© ${photo.author} ${currentYear}. All rights reserved.`,
+            copyrightNotice: `© ${photo.author} ${currentYear}. Tous droits réservés.`,
             datePublished:
                 photo.date,
             keywords:
@@ -62,8 +62,8 @@ const ldJsons =
 ---
 
 <Layout
-    title={`GALLERY // ${SITE_CONFIG.title}`}
-    description="A curated collection of visual moments."
+    title={`GALERIE // ${SITE_CONFIG.title}`}
+    description="Une sélection de moments en images."
     preconnectImageServer={true}
 >
     {
@@ -87,7 +87,7 @@ const ldJsons =
         <div class="hidden md:flex fixed top-0 right-0 h-screen z-[-10] select-none pointer-events-none overflow-hidden items-center justify-center">
             <TextReveal
                 client:load
-                text="Gallery"
+                text="Galerie"
                 type="char"
                 className="font-bold text-black/[0.03] dark:text-white/[0.10] text-[8vh] sm:text-[10vh] lg:text-[18vh] leading-none whitespace-nowrap"
                 style={{
@@ -104,21 +104,21 @@ const ldJsons =
                 <div class="flex items-center gap-2 mb-2 sm:mb-2.5">
                     <span class="w-1.5 h-1.5 rounded-full bg-black/40 dark:bg-white/40"></span>
                     <span class="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-secondary-text">
-                        Visual Archive & Moments
+                        Archives visuelles & instants
                     </span>
                 </div>
                 <h1 class="font-serif text-3xl sm:text-5xl lg:text-6xl font-normal leading-tight tracking-tight text-primary-text">
-                    Gallery.
+                    Galerie.
                 </h1>
             </div>
 
             <!-- Right Column: Description + Total Collection Counter -->
             <div class="max-w-md md:text-right flex flex-col md:items-end gap-2 pb-0.5">
                 <p class="text-[13px] sm:text-sm font-light leading-relaxed text-secondary-text dark:text-gray-400">
-                    Photographic series, light studies, and spatial fragments captured across journeys and seasons.
+                    Séries photographiques, jeux de lumière et fragments de lieux, saisis au fil des voyages et des saisons.
                 </p>
                 <div class="text-[10px] sm:text-[11px] font-mono text-secondary-text/50 uppercase tracking-widest">
-                    // {photos.length} {photos.length === 1 ? 'CURATED COLLECTION' : 'CURATED COLLECTIONS'}
+                    // {photos.length} {photos.length <= 1 ? 'ALBUM' : 'ALBUMS'}
                 </div>
             </div>
         </header>

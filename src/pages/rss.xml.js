@@ -4,7 +4,7 @@ import { SITE_CONFIG } from '@/config';
 
 export async function GET(context) {
     const posts = await getCollection('blog');
-    const traces = await getCollection('traces');
+    const courses = await getCollection('courses');
     
     const allItems = [
         ...posts.map((post) => ({
@@ -13,11 +13,11 @@ export async function GET(context) {
             description: post.data.description,
             link: `/blog/${post.id}/`,
         })),
-        ...traces.map((trace) => ({
-            title: `Trace: ${trace.data.title.replace(/^SYS_TRACE:\\s*/i, '')}`,
-            pubDate: trace.data.endDate,
-            description: trace.data.baseline.environment,
-            link: `/traces/${trace.id}/`,
+        ...courses.map((course) => ({
+            title: `Course : ${course.data.nom}`,
+            pubDate: course.data.date,
+            description: `${course.data.sport}, ${course.data.lieu}`,
+            link: `/courses/${course.id}/`,
         }))
     ];
 
@@ -28,5 +28,6 @@ export async function GET(context) {
         description: SITE_CONFIG.description,
         site: context.site || SITE_CONFIG.site, 
         items: allItems,
+        customData: '<language>fr-fr</language>',
     });
 }
