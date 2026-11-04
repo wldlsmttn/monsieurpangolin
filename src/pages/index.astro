@@ -5,7 +5,7 @@ import { SITE_CONFIG } from "@/config";
 import {
     Content as AboutContent,
     frontmatter as aboutFrontmatter,
-} from "@/content/pages/about.md";
+} from "@/content/pages/a-propos.md";
 
 import DecryptedText from "@/components/ui/DecryptedText";
 import CursorGlow from "@/components/ui/CursorGlow";
@@ -13,7 +13,7 @@ import HarmonicSystemSVG from "@/components/ui/HarmonicSystemSVG.astro";
 ---
 
 <Layout
-    title={`HOME // ${SITE_CONFIG.title}`}
+    title={`ACCUEIL // ${SITE_CONFIG.title}`}
     description={SITE_CONFIG.description}
 >
     <!-- Cursor Glow (Desktop only: mobile has no cursor) -->
@@ -61,7 +61,7 @@ import HarmonicSystemSVG from "@/components/ui/HarmonicSystemSVG.astro";
                         SITE_CONFIG.authorPhonetic && (
                             <span
                                 class="font-mono text-xs md:text-sm font-normal tracking-wider text-neutral-400 dark:text-neutral-500 ml-1.5 mt-1 md:mt-1.5 select-all"
-                                title="Phonetic transcription"
+                                title="Transcription phonétique"
                             >
                                 {SITE_CONFIG.authorPhonetic}
                             </span>

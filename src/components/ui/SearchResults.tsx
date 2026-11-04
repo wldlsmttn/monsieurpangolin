@@ -107,9 +107,10 @@ export default function SearchResults() {
 
     // Helper to determine the category based on URL
     const getCategoryFromUrl = (url: string) => {
-        if (url.includes('/gallery/')) return 'Gallery';
-        const isBlog = url.includes('/blog/') || (!url.includes('/gallery/') && !url.includes('/about/'));
-        return isBlog ? 'Blog' : 'About';
+        if (url.includes('/galerie/')) return 'Galerie';
+        if (url.includes('/courses/')) return 'Course';
+        if (url.includes('/blog/')) return 'Blog';
+        return 'Page';
     };
 
     // Helper to highlight query terms in plain text (for AI search results)
@@ -131,14 +132,14 @@ export default function SearchResults() {
                 <div className="flex items-center justify-between gap-4 mb-12">
                     <FadeContent delay={100} duration={600}>
                         <p className="text-secondary-text font-mono text-[10px] md:text-sm tracking-widest uppercase opacity-60 dark:opacity-80 whitespace-nowrap">
-                            {isLoading ? "Querying..." : `${currentResults.length} matches`}
+                            {isLoading ? "Recherche…" : `${currentResults.length} résultat${currentResults.length > 1 ? "s" : ""}`}
                         </p>
                     </FadeContent>
 
                     {/* Tab Switcher */}
                     <div className="flex p-1 bg-black/5 dark:bg-white/10 rounded-full backdrop-blur-md shrink-0 border border-black/5 dark:border-white/5">
                         {[
-                            { id: "keyword", label: "Keyword", icon: RiFileSearchLine },
+                            { id: "keyword", label: "Mots-clés", icon: RiFileSearchLine },
                             ...(SITE_CONFIG.aiSearch ? [{ id: "ai", label: "AI Intel", icon: RiSparkling2Line }] : [])
                         ].map((tab) => (
                             <button
@@ -194,7 +195,7 @@ export default function SearchResults() {
                                                     <a href={r.url} className="block group/link after:absolute after:inset-0 after:z-20 after:cursor-pointer">
                                                         <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-primary-text dark:text-white group-hover/link:text-black dark:group-hover/link:text-white transition-colors leading-tight">
                                                             <ScrollFloat
-                                                                text={r.meta?.title || "Untitled"}
+                                                                text={r.meta?.title || "Sans titre"}
                                                                 className="text-2xl md:text-3xl font-bold tracking-tight"
                                                                 stagger={0.03}
                                                             />
@@ -257,10 +258,10 @@ export default function SearchResults() {
                             className="py-32 flex flex-col justify-center max-w-2xl"
                         >
                             <p className="text-primary-text font-serif text-3xl md:text-4xl italic mb-6 opacity-80 dark:opacity-90">
-                                The archive returns nothing.
+                                Aucun résultat.
                             </p>
                             <p className="text-sm md:text-base font-sans font-light text-secondary-text leading-relaxed opacity-70 dark:opacity-80">
-                                No fragments or articles match your inquiry.{SITE_CONFIG.aiSearch && ` Try switching to ${activeTab === "keyword" ? "AI Intel" : "Keyword"} search for a different perspective.`}
+                                Aucun article ne correspond à votre recherche.{SITE_CONFIG.aiSearch && ` Essayez la recherche ${activeTab === "keyword" ? "IA" : "par mots-clés"}.`}
                             </p>
                         </motion.div>
                     ) : null}

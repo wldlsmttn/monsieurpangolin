@@ -33,11 +33,11 @@ export async function getPhotos(): Promise<PhotoEntry[]> {
         const images = parsePhotoBody(bodyText);
 
         if (!entry.data.name || images.length === 0) {
-            throw new Error(`部分照片数据不完整 (slug: ${entry.id})`);
+            throw new Error(`Album incomplet : il faut un nom et au moins une image (${entry.id})`);
         }
 
         if (!images[0]?.url) {
-            throw new Error(`照片数据格式不正确: 首图 URL 为空 (slug: ${entry.id})`);
+            throw new Error(`Album invalide : l'URL de la première image est vide (${entry.id})`);
         }
 
         const dateStr = entry.data.date instanceof Date

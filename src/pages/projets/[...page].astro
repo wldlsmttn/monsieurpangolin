@@ -68,8 +68,8 @@ function getProjectSubtitle(entry: ProjectEntry['data']) {
 ---
 
 <Layout
-    title={`PROJECTS // ${SITE_CONFIG.title}`}
-    description="A showcase of tools, designs, and experiments."
+    title={`PROJETS // ${SITE_CONFIG.title}`}
+    description="Mes autres sites et projets."
 >
     <div
         class="max-w-6xl mx-auto w-full pt-2 sm:pt-4 md:pt-8 pb-16 sm:pb-20"
@@ -80,7 +80,7 @@ function getProjectSubtitle(entry: ProjectEntry['data']) {
         >
             <TextReveal
                 client:load
-                text="Projects"
+                text="Projets"
                 type="char"
                 className="font-bold text-black/[0.03] dark:text-white/[0.10] text-[8vh] sm:text-[10vh] lg:text-[18vh] leading-none whitespace-nowrap"
                 style={{
@@ -99,20 +99,20 @@ function getProjectSubtitle(entry: ProjectEntry['data']) {
                 <div class="flex items-center gap-2 mb-2 sm:mb-3">
                     <span class="w-1.5 h-1.5 rounded-full bg-black/30 dark:bg-white/30"></span>
                     <span class="font-mono text-[10px] sm:text-xs uppercase tracking-widest text-secondary-text">
-                        Works & Experiments
+                        Sites & projets
                     </span>
                 </div>
 
                 <h1 class="font-serif text-3xl sm:text-5xl lg:text-6xl font-normal leading-tight tracking-tight text-primary-text mb-2.5 sm:mb-4">
-                    Projects.
+                    Projets.
                 </h1>
 
                 <p class="text-[13px] sm:text-base text-secondary-text dark:text-gray-400 font-light leading-relaxed mb-4 sm:mb-6 max-w-md">
-                    Curated digital instruments, open-source systems, and experimental craft exploring the intersection of architecture, code, and aesthetics.
+                    Mes autres sites et projets, à découvrir ailleurs sur le web.
                 </p>
 
                 <div class="text-[11px] sm:text-xs font-mono text-gray-500 dark:text-gray-400 uppercase tracking-widest">
-                    // {page.total} {page.total === 1 ? 'ACTIVE SYSTEM' : 'ACTIVE SYSTEMS'}
+                    // {page.total} {page.total <= 1 ? 'PROJET' : 'PROJETS'}
                 </div>
             </div>
 
@@ -147,7 +147,7 @@ function getProjectSubtitle(entry: ProjectEntry['data']) {
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             class="absolute inset-0 z-20 cursor-pointer rounded-xl"
-                                            aria-label={`View ${entry.data.title}`}
+                                            aria-label={`Ouvrir ${entry.data.title}`}
                                         />
                                     )}
 
@@ -176,8 +176,8 @@ function getProjectSubtitle(entry: ProjectEntry['data']) {
                                                             target="_blank"
                                                             rel="noopener noreferrer"
                                                             class="p-1.5 -mr-1 rounded-lg text-secondary-text/80 dark:text-zinc-300 hover:text-black dark:hover:text-white hover:bg-black/[0.05] dark:hover:bg-white/[0.08] transition-colors inline-flex items-center justify-center"
-                                                            title="Source Code"
-                                                            aria-label={`Source Code for ${entry.data.title}`}
+                                                            title="Code source"
+                                                            aria-label={`Code source de ${entry.data.title}`}
                                                         >
                                                             <RiGithubLine size={17} />
                                                         </a>
@@ -208,7 +208,7 @@ function getProjectSubtitle(entry: ProjectEntry['data']) {
                     page.data.length === 0 && (
                         <div class="text-secondary-text py-12 px-4 border border-dashed border-black/10 dark:border-white/10 rounded-xl text-center">
                             <p class="text-xs sm:text-sm font-mono opacity-70">
-                                // NO ACTIVE PROJECTS REGISTERED
+                                // AUCUN PROJET POUR L'INSTANT
                             </p>
                         </div>
                     )
@@ -223,20 +223,20 @@ function getProjectSubtitle(entry: ProjectEntry['data']) {
                                     href={page.url.prev}
                                     class="text-xs sm:text-sm font-medium hover:text-black dark:hover:text-white transition-colors"
                                 >
-                                    ← Previous
+                                    ← Précédent
                                 </a>
                             ) : (
                                 <span />
                             )}
                             <span class="text-[10px] sm:text-xs font-mono">
-                                Page {page.currentPage} of {page.lastPage}
+                                Page {page.currentPage} sur {page.lastPage}
                             </span>
                             {page.url.next ? (
                                 <a
                                     href={page.url.next}
                                     class="text-xs sm:text-sm font-medium hover:text-black dark:hover:text-white transition-colors"
                                 >
-                                    Next →
+                                    Suivant →
                                 </a>
                             ) : (
                                 <span />

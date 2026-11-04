@@ -63,7 +63,7 @@ export default function ThemeToggle() {
         <button
             onClick={toggleTheme}
             className="relative inline-flex h-5 w-5 items-center justify-center cursor-pointer"
-            aria-label="Toggle theme"
+            aria-label="Changer de thème"
         >
             <AnimatePresence mode="wait" initial={false}>
                 {theme === "dark" ? (

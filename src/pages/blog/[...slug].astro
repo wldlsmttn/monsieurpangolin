@@ -145,7 +145,7 @@ const blogCopyright =
                 {
                     "@type": "ListItem",
                     "position": 1,
-                    "name": "Home",
+                    "name": "Accueil",
                     "item": SITE_CONFIG.site
                 },
                 {
@@ -209,7 +209,7 @@ const blogCopyright =
                         <span>
                             {
                                 entry.data.pubDate.toLocaleDateString(
-                                    "en-US",
+                                    "fr-FR",
                                     {
                                         year: "numeric",
                                         month: "long",
@@ -263,11 +263,11 @@ const blogCopyright =
                             <div class="flex flex-col md:flex-row justify-between items-start gap-6 md:gap-10">
                                 <div class="flex flex-col gap-3">
                                     <span class="text-[11px] font-mono uppercase tracking-widest text-primary-text opacity-40">
-                                        Copyright
+                                        Droits d'auteur
                                     </span>
                                     <div class="flex flex-col gap-1.5 text-[15px] font-sans text-primary-text">
                                         <p class="opacity-90 font-light">
-                                            &copy; {entry.data.pubDate.getFullYear()} <span class="font-medium">{blogCopyright.author}</span>. All rights reserved.
+                                            &copy; {entry.data.pubDate.getFullYear()} <span class="font-medium">{blogCopyright.author}</span>. Tous droits réservés.
                                         </p>
                                         <p class="opacity-60 text-sm font-light max-w-2xl leading-relaxed">
                                             {blogCopyright.declaration}
@@ -320,7 +320,7 @@ const blogCopyright =
                                 >
                                     <span class="text-xs font-mono uppercase tracking-widest opacity-60 dark:opacity-80 flex items-center gap-1.5 mb-2 group-hover:opacity-100 transition-opacity">
                                         <RiArrowLeftDoubleLine className="w-3.5 h-3.5 transition-transform duration-300 group-hover:-translate-x-0.5" />
-                                        <span>Next Post</span>
+                                        <span>Article suivant</span>
                                     </span>
                                     <span class="text-lg font-bold group-hover:underline">
                                         {
@@ -343,7 +343,7 @@ const blogCopyright =
                                     class="group block"
                                 >
                                     <span class="text-xs font-mono uppercase tracking-widest opacity-60 dark:opacity-80 flex items-center justify-end gap-1.5 mb-2 group-hover:opacity-100 transition-opacity">
-                                        <span>Previous Post</span>
+                                        <span>Article précédent</span>
                                         <RiArrowRightDoubleLine className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
                                     </span>
                                     <span class="text-lg font-bold group-hover:underline">

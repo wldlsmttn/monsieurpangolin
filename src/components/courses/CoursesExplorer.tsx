@@ -5,31 +5,21 @@ import { RiArrowRightUpLine, RiCloseLine, RiArrowLeftSLine, RiArrowRightSLine } 
 import CityRoadMap from './CityRoadMap';
 import ShinyText from '../ui/ShinyText';
 
-export interface TraceDestination {
-    id: string;
-    name: string; // Title / Site name
-    siteName?: string;
-    environment?: string;
-    description: string;
-    photos: string[];
-    detailUrl: string;
-    coordinates: string; // for the map
-    dateStr: string;
-}
+import type { CourseSummary } from '@/utils/courses';
 
-export interface TraceYear {
+export interface CourseYear {
     year: number;
-    destinations: TraceDestination[];
+    courses: CourseSummary[];
 }
 
-interface TracesExplorerProps {
-    data: TraceYear[];
+interface CoursesExplorerProps {
+    data: CourseYear[];
 }
 
-export default function TracesExplorer({ data }: TracesExplorerProps) {
+export default function CoursesExplorer({ data }: CoursesExplorerProps) {
     const [activeYear, setActiveYear] = useState<number>(() => {
         if (typeof window !== 'undefined') {
-            const y = new URLSearchParams(window.location.search).get('year');
+            const y = new URLSearchParams(window.location.search).get('annee');
             if (y && !isNaN(Number(y)) && data.some(dy => dy.year === Number(y))) return Number(y);
         }
         return data[0]?.year || new Date().getFullYear();
@@ -40,7 +30,7 @@ export default function TracesExplorer({ data }: TracesExplorerProps) {
             const d = new URLSearchParams(window.location.search).get('id');
             if (d) return d;
         }
-        return data[0]?.destinations[0]?.id || '';
+        return data[0]?.courses[0]?.id || '';
     });
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [modalPage, setModalPage] = useState(0);
@@ -49,22 +39,22 @@ export default function TracesExplorer({ data }: TracesExplorerProps) {
     // When active year changes, update active destination to the first one in that year
     useEffect(() => {
         const yearData = data.find(y => y.year === activeYear);
-        if (yearData && yearData.destinations.length > 0) {
+        if (yearData && yearData.courses.length > 0) {
             // Only update if current activeDestId is not in this year
-            if (!yearData.destinations.some(d => d.id === activeDestId)) {
-                setActiveDestId(yearData.destinations[0].id);
+            if (!yearData.courses.some(d => d.id === activeDestId)) {
+                setActiveDestId(yearData.courses[0].id);
             }
         }
     }, [activeYear, data]);
 
     const activeYearData = data.find(y => y.year === activeYear);
-    const activeDest = activeYearData?.destinations.find(d => d.id === activeDestId) || activeYearData?.destinations[0];
+    const activeDest = activeYearData?.courses.find(d => d.id === activeDestId) || activeYearData?.courses[0];
 
     // Sync state to URL without reloading
     useEffect(() => {
         if (typeof window !== 'undefined' && activeYear && activeDest) {
             const url = new URL(window.location.href);
-            url.searchParams.set('year', activeYear.toString());
+            url.searchParams.set('annee', activeYear.toString());
             url.searchParams.set('id', activeDest.id);
             window.history.replaceState({}, '', url);
         }
@@ -75,7 +65,7 @@ export default function TracesExplorer({ data }: TracesExplorerProps) {
     const totalPages = Math.ceil(data.length / itemsPerPage);
     const currentModalYears = data.slice(modalPage * itemsPerPage, (modalPage + 1) * itemsPerPage);
 
-    if (!data || data.length === 0) return <div className="text-center py-20 opacity-50 font-mono text-sm">NO TRACE DATA FOUND</div>;
+    if (!data || data.length === 0) return <div className="text-center py-20 opacity-50 font-mono text-sm">AUCUNE COURSE POUR L'INSTANT</div>;
 
     return (
         <>
@@ -96,8 +86,8 @@ export default function TracesExplorer({ data }: TracesExplorerProps) {
                             className="absolute inset-0"
                         >
                             <CityRoadMap
-                                siteName={activeDest.siteName || activeDest.name}
-                                coordinates={activeDest.coordinates}
+                                siteName={activeDest.lieu}
+                                coordinates={activeDest.coordonnees}
                                 className="w-full h-full object-cover sm:object-contain"
                             />
                         </motion.div>
@@ -133,7 +123,7 @@ export default function TracesExplorer({ data }: TracesExplorerProps) {
                                         ? 'text-secondary-text/80 dark:text-zinc-300 font-medium'
                                         : 'text-secondary-text/50 dark:text-zinc-500 group-hover:text-secondary-text/80 dark:group-hover:text-zinc-300'
                                 }`}>
-                                    {String(yearItem.destinations.length).padStart(2, '0')}
+                                    {String(yearItem.courses.length).padStart(2, '0')}
                                 </span>
                             </button>
                         );
@@ -151,7 +141,7 @@ export default function TracesExplorer({ data }: TracesExplorerProps) {
                             <span className="font-medium text-primary-text">{activeYear}</span>
                         </div>
                         <div className="flex items-center gap-1.5 opacity-60 dark:opacity-80 group-hover:opacity-100 transition-opacity">
-                            <span className="text-[10px] font-mono uppercase tracking-widest text-secondary-text dark:text-zinc-400">change year</span>
+                            <span className="text-[10px] font-mono uppercase tracking-widest text-secondary-text dark:text-zinc-400">changer d'année</span>
                         </div>
                     </button>
                 </div>
@@ -163,7 +153,7 @@ export default function TracesExplorer({ data }: TracesExplorerProps) {
                 {/* X-Axis: Destinations (Horizontal scroll tabs, protected against background noise) */}
                 <div className="w-full shrink-0 mb-5 overflow-x-auto hide-scrollbar z-20 pb-2 relative">
                     <div className="flex items-baseline gap-6 md:gap-8 min-w-max">
-                        {activeYearData?.destinations.map((dest) => {
+                        {activeYearData?.courses.map((dest) => {
                             const isActive = activeDestId === dest.id;
                             return (
                                 <button
@@ -174,7 +164,7 @@ export default function TracesExplorer({ data }: TracesExplorerProps) {
                                             : 'text-secondary-text/65 dark:text-zinc-400 hover:text-primary-text dark:hover:text-white dark:[text-shadow:_0_1px_6px_rgba(0,0,0,0.9)]'
                                         }`}
                                 >
-                                    <span>{dest.name}</span>
+                                    <span>{dest.nom}</span>
                                     {isActive && (
                                         <motion.div
                                             layoutId="activeDestUnderline"
@@ -203,21 +193,39 @@ export default function TracesExplorer({ data }: TracesExplorerProps) {
                                 {/* Telemetry Metadata Row: Clean Typography */}
                                 <div className="flex flex-wrap items-center justify-between gap-3 font-mono text-[11px] sm:text-xs">
                                     <div className="flex items-center gap-2 sm:gap-2.5">
-                                        {activeDest.environment && (
-                                            <span className="text-primary-text dark:text-zinc-200 font-medium dark:[text-shadow:_0_1px_6px_#0a0a0a]">{activeDest.environment}</span>
-                                        )}
-                                        {activeDest.environment && activeDest.coordinates && (
-                                            <span className="text-secondary-text/40 dark:text-zinc-500">/</span>
-                                        )}
-                                        {activeDest.coordinates && (
-                                            <span className="text-secondary-text dark:text-zinc-300 tracking-tight dark:[text-shadow:_0_1px_6px_#0a0a0a]">{activeDest.coordinates}</span>
-                                        )}
+                                        <span className="text-primary-text dark:text-zinc-200 font-medium dark:[text-shadow:_0_1px_6px_#0a0a0a]">{activeDest.sport}</span>
+                                        <span className="text-secondary-text/40 dark:text-zinc-500">/</span>
+                                        <span className="text-secondary-text dark:text-zinc-300 tracking-tight dark:[text-shadow:_0_1px_6px_#0a0a0a]">{activeDest.lieu}</span>
                                     </div>
 
                                     {activeDest.dateStr && (
                                         <span className="text-secondary-text dark:text-zinc-300 font-mono tracking-wide dark:[text-shadow:_0_1px_6px_#0a0a0a]">{activeDest.dateStr}</span>
                                     )}
                                 </div>
+
+                                {/* Stats: distance, D+, temps, allure/vitesse, classement */}
+                                {(activeDest.stats.length > 0 || activeDest.classement || activeDest.classementCategorie) && (
+                                    <dl className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-6 gap-y-4 py-4 border-y border-black/5 dark:border-white/10">
+                                        {activeDest.stats.map((stat) => (
+                                            <div key={stat.label} className="flex flex-col gap-1">
+                                                <dt className="font-mono text-[10px] uppercase tracking-widest text-secondary-text/70 dark:text-zinc-400">{stat.label}</dt>
+                                                <dd className="text-base sm:text-lg font-medium tabular-nums text-primary-text dark:text-zinc-100">{stat.value}</dd>
+                                            </div>
+                                        ))}
+                                        {activeDest.classement && (
+                                            <div className="flex flex-col gap-1">
+                                                <dt className="font-mono text-[10px] uppercase tracking-widest text-secondary-text/70 dark:text-zinc-400">Classement</dt>
+                                                <dd className="text-base sm:text-lg font-medium tabular-nums text-primary-text dark:text-zinc-100">{activeDest.classement}</dd>
+                                            </div>
+                                        )}
+                                        {activeDest.classementCategorie && (
+                                            <div className="flex flex-col gap-1">
+                                                <dt className="font-mono text-[10px] uppercase tracking-widest text-secondary-text/70 dark:text-zinc-400">Catégorie</dt>
+                                                <dd className="text-base sm:text-lg font-medium tabular-nums text-primary-text dark:text-zinc-100">{activeDest.classementCategorie}</dd>
+                                            </div>
+                                        )}
+                                    </dl>
+                                )}
 
                                 {/* Text Description (Only if present) */}
                                 {activeDest.description && (
@@ -234,11 +242,11 @@ export default function TracesExplorer({ data }: TracesExplorerProps) {
                                                 key={`photo-${idx}`}
                                                 className="w-full h-[160px] md:h-[200px] lg:h-[155px] rounded-xl overflow-hidden cursor-pointer group relative"
                                                 onClick={() => setLightboxPhoto(photo)}
-                                                style={idx === 0 ? { viewTransitionName: `trace-img-container-${activeDest.id}` } : undefined}
+                                                style={idx === 0 ? { viewTransitionName: `course-img-${activeDest.id.replace(/[^a-zA-Z0-9_-]/g, "-")}` } : undefined}
                                             >
                                                 <img
                                                     src={photo}
-                                                    alt={`${activeDest.name} - ${idx}`}
+                                                    alt={`${activeDest.nom} – photo ${idx + 1}`}
                                                     loading="lazy"
                                                     decoding="async"
                                                     className={`w-full h-full object-cover transition-all duration-500 group-hover:scale-105 ${idx === 0
@@ -255,21 +263,21 @@ export default function TracesExplorer({ data }: TracesExplorerProps) {
                                 {/* Fallback when neither text nor photos exist */}
                                 {!activeDest.description && (!activeDest.photos || activeDest.photos.length === 0) && (
                                     <div className="py-8 text-center text-secondary-text/50 font-mono text-xs uppercase tracking-widest">
-                                        // COORDINATES_LOGGED // DETAILED ENTRY PENDING
+                                        // RÉCIT À VENIR
                                     </div>
                                 )}
 
                                 {/* Action: View Full Log & Map Attribution */}
                                 <div className="flex flex-wrap items-center justify-between gap-2 mt-2 pt-2 border-t border-black/5 dark:border-white/5 pr-1">
                                     <span className="font-mono text-[10px] uppercase tracking-widest text-secondary-text/65 dark:text-zinc-400 dark:[text-shadow:_0_1px_4px_rgba(0,0,0,0.9)]">
-                                        MAP DATA // © OPENSTREETMAP
+                                        CARTE // © OPENSTREETMAP
                                     </span>
                                     <a 
                                         href={activeDest.detailUrl}
                                         className="group inline-flex items-center gap-1.5 text-xs md:text-[13px] font-mono uppercase tracking-widest text-secondary-text/80 dark:text-zinc-300 hover:text-black dark:hover:text-white transition-colors duration-300 active:scale-[0.97]"
                                     >
                                         <ShinyText 
-                                            text="VIEW FULL LOG" 
+                                            text="LIRE LE RÉCIT" 
                                             speed={3} 
                                             color="rgba(0,0,0,0.6)"
                                             colorDark="rgba(255,255,255,0.7)"
@@ -299,7 +307,7 @@ export default function TracesExplorer({ data }: TracesExplorerProps) {
                         >
                             {/* Label */}
                             <p className="text-[9px] font-mono uppercase tracking-widest opacity-40 mb-6" onClick={e => e.stopPropagation()}>
-                                Select Year
+                                Choisir l'année
                             </p>
 
                             {/* 3x3 Grid */}
@@ -343,7 +351,7 @@ export default function TracesExplorer({ data }: TracesExplorerProps) {
                                         disabled={modalPage === 0}
                                         className="p-2 transition-all disabled:opacity-20 flex items-center gap-1 active:scale-90"
                                     >
-                                        <RiArrowLeftSLine className="w-4 h-4" /> PREV
+                                        <RiArrowLeftSLine className="w-4 h-4" /> PRÉC.
                                     </button>
 
                                     <span className="opacity-60 tabular-nums">
@@ -355,7 +363,7 @@ export default function TracesExplorer({ data }: TracesExplorerProps) {
                                         disabled={modalPage === totalPages - 1}
                                         className="p-2 transition-all disabled:opacity-20 flex items-center gap-1 active:scale-90"
                                     >
-                                        NEXT <RiArrowRightSLine className="w-4 h-4" />
+                                        SUIV. <RiArrowRightSLine className="w-4 h-4" />
                                     </button>
                                 </div>
                             )}
@@ -377,7 +385,7 @@ export default function TracesExplorer({ data }: TracesExplorerProps) {
                         >
                             <button
                                 className="absolute top-5 right-5 p-2.5 rounded-full bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10 transition-colors z-[101] border border-black/5 dark:border-white/5"
-                                aria-label="Close lightbox"
+                                aria-label="Fermer"
                             >
                                 <RiCloseLine className="w-5 h-5 text-black dark:text-white" />
                             </button>
@@ -387,7 +395,7 @@ export default function TracesExplorer({ data }: TracesExplorerProps) {
                                 exit={{ scale: 0.92, opacity: 0 }}
                                 transition={{ type: "spring", damping: 28, stiffness: 320 }}
                                 src={lightboxPhoto}
-                                alt="Zoomed trace"
+                                alt="Photo agrandie"
                                 className="max-w-full max-h-full object-contain rounded-2xl shadow-2xl ring-1 ring-black/5 dark:ring-white/5"
                                 onClick={(e) => e.stopPropagation()}
                             />

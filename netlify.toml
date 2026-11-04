@@ -15,3 +15,46 @@
   for = "/pagefind/*"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
+
+# Anciennes adresses (anglaises) → nouvelles adresses françaises
+[[redirects]]
+  from = "/gallery/*"
+  to = "/galerie/:splat"
+  status = 301
+[[redirects]]
+  from = "/gallery"
+  to = "/galerie"
+  status = 301
+[[redirects]]
+  from = "/traces/*"
+  to = "/courses"
+  status = 301
+[[redirects]]
+  from = "/traces"
+  to = "/courses"
+  status = 301
+[[redirects]]
+  from = "/projects/*"
+  to = "/projets/:splat"
+  status = 301
+[[redirects]]
+  from = "/projects"
+  to = "/projets"
+  status = 301
+[[redirects]]
+  from = "/elsewhere"
+  to = "/selection"
+  status = 301
+[[redirects]]
+  from = "/search"
+  to = "/recherche"
+  status = 301
+  query = { q = ":q" }
+[[redirects]]
+  from = "/search"
+  to = "/recherche"
+  status = 301
+[[redirects]]
+  from = "/about"
+  to = "/a-propos"
+  status = 301

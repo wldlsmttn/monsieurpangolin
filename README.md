@@ -24,9 +24,23 @@ Requires Node.js 22.22+ and pnpm.
 
 ## Customising
 
-- **Site settings** (title, URL, navigation, footer, social links): `src/config.ts`. Update `site` to your real domain.
+- **Site settings** (title, URL, navigation, footer, order of the "Ma sélection" categories, Amazon Partner notice): `src/config.ts`.
 - **Logo / favicon**: `public/favicon.svg` (used as a mask, so a single-colour shape works best).
-- **Content**: `src/content/` — `blog/`, `photos/`, `traces/`, `projects/`, `pages/about.md`. To write a blog post, copy `src/content/blog/_modele-article.md` to `src/content/blog/<year>/<slug>.md` (files starting with `_` are ignored).
+- **Content** lives in `src/content/`. Each folder has a commented French template whose name starts with `_` (ignored by the site): copy it without the `_` and fill it in.
+
+| Section | URL | Where | Template |
+| :-- | :-- | :-- | :-- |
+| Blog | `/blog` | `src/content/blog/<year>/<slug>.md` | `_modele-article.md` |
+| Galerie | `/galerie` | `src/content/photos/<year>/<slug>.md` | `_modele-album.md` |
+| Courses | `/courses` | `src/content/courses/<year>/<slug>.md` | `_modele-course.md` |
+| Projets | `/projets` | `src/content/projects/<slug>.md` | `_modele-projet.md` |
+| Ma sélection | `/selection` | `src/content/selection.yaml` | example in the file |
+| À propos | `/a-propos` | `src/content/pages/a-propos.md` | — |
+
+Courses compute the pace (min/km) for running and trail, and the average speed (km/h) for cycling, from `distance` and `temps`.
+
+Old English URLs (`/gallery`, `/traces`, `/projects`, `/elsewhere`, `/search`, `/about`) redirect to the French ones (see `netlify.toml`).
+
 - Markdown extensions are documented in `MARKDOWN_SYNTAX.md`.
 
 ## Differences from the upstream theme

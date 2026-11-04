@@ -9,18 +9,19 @@ export async function GET() {
 
 > ${description}
 
-## Core Resources
+## Pages principales
 
-- [Homepage](${site}/)
+- [Accueil](${site}/)
 - [Blog](${site}/blog)
-- [Projects](${site}/projects)
-- [Gallery](${site}/gallery)
-- [Traces](${site}/traces)
-- [About](${site}/about)
+- [Galerie](${site}/galerie)
+- [Courses](${site}/courses)
+- [Projets](${site}/projets)
+- [Ma sélection](${site}/selection)
+- [À propos](${site}/a-propos)
 
 ## LLM & AI Services
 
-- [LLMs Full Index](${site}/llms-full.txt) - Complete index of all documents with raw markdown links.
+- [Index complet](${site}/llms-full.txt) - Tous les contenus, avec liens vers le Markdown brut.
 
 `;
 

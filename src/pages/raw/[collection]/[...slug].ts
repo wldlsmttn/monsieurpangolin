@@ -10,7 +10,7 @@ export async function getStaticPaths() {
         { name: 'blog', baseDir: 'src/content/blog', entries: await getCollection('blog') },
         { name: 'pages', baseDir: 'src/content/pages', entries: await getCollection('pages') },
         { name: 'projects', baseDir: 'src/content/projects', entries: await getCollection('projects') },
-        { name: 'traces', baseDir: 'src/content/traces', entries: await getCollection('traces') }
+        { name: 'courses', baseDir: 'src/content/courses', entries: await getCollection('courses') }
     ];
 
     const paths = [];
@@ -78,10 +78,10 @@ export async function GET({ props }: APIContext) {
     let canonicalUrl: string;
     if (collection === 'blog') {
         canonicalUrl = `${site}/blog/${id}`;
-    } else if (collection === 'traces') {
-        canonicalUrl = `${site}/traces/${id}`;
+    } else if (collection === 'courses') {
+        canonicalUrl = `${site}/courses/${id}`;
     } else if (collection === 'projects') {
-        canonicalUrl = `${site}/projects#${id}`;
+        canonicalUrl = `${site}/projets#${id}`;
     } else {
         canonicalUrl = `${site}/${id}`;
     }

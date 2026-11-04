@@ -94,11 +94,11 @@ export const ExhibitionStream: React.FC<ExhibitionStreamProps> = ({ photo }) => 
             {/* Top Navigation Bar: Back Link on Left, Mode Switcher on Right */}
             <div className="flex items-center justify-between mb-8 sm:mb-12">
                 <a
-                    href="/gallery"
+                    href="/galerie"
                     className="inline-flex items-center gap-2 text-xs font-mono tracking-wider text-secondary-text/70 hover:text-primary-text transition-colors duration-200 group"
                 >
                     <RiArrowLeftLine className="w-3.5 h-3.5 transition-transform duration-200 group-hover:-translate-x-1" />
-                    <span>Gallery</span>
+                    <span>Galerie</span>
                 </a>
 
                 {/* Switcher Pill: Pure Minimalist Apple/Editorial Style */}
@@ -110,10 +110,10 @@ export const ExhibitionStream: React.FC<ExhibitionStreamProps> = ({ photo }) => 
                                 ? 'bg-black text-white dark:bg-white dark:text-black font-medium shadow-sm'
                                 : 'text-secondary-text hover:text-primary-text'
                         }`}
-                        title="Cinema Stage View"
+                        title="Vue scène"
                     >
                         <RiFocusLine className="w-3.5 h-3.5" />
-                        <span>Stage</span>
+                        <span>Scène</span>
                     </button>
                     <button
                         onClick={() => setViewMode('wall')}
@@ -122,10 +122,10 @@ export const ExhibitionStream: React.FC<ExhibitionStreamProps> = ({ photo }) => 
                                 ? 'bg-black text-white dark:bg-white dark:text-black font-medium shadow-sm'
                                 : 'text-secondary-text hover:text-primary-text'
                         }`}
-                        title="Masonry Wall View"
+                        title="Vue mosaïque"
                     >
                         <RiLayoutGridLine className="w-3.5 h-3.5" />
-                        <span>Wall</span>
+                        <span>Mosaïque</span>
                     </button>
                 </div>
             </div>
@@ -144,18 +144,18 @@ export const ExhibitionStream: React.FC<ExhibitionStreamProps> = ({ photo }) => 
                 <div className="flex items-center gap-2.5 text-xs sm:text-[13px] font-mono text-secondary-text/65 flex-wrap">
                     {photo.date && <span>{photo.date}</span>}
                     {photo.date && <span>·</span>}
-                    <span>{images.length} {images.length === 1 ? 'FRAME' : 'FRAMES'}</span>
+                    <span>{images.length} {images.length === 1 ? 'PHOTO' : 'PHOTOS'}</span>
                     {photo.author && (
                         <>
                             <span>·</span>
-                            <span>BY {photo.author}</span>
+                            <span>PAR {photo.author}</span>
                         </>
                     )}
                     {viewMode === 'stage' && (
                         <>
                             <span>·</span>
                             <span className="text-black dark:text-white font-medium">
-                                FRAME {String(activeIndex + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
+                                PHOTO {String(activeIndex + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
                             </span>
                         </>
                     )}
@@ -194,14 +194,14 @@ export const ExhibitionStream: React.FC<ExhibitionStreamProps> = ({ photo }) => 
                                 <button
                                     onClick={prevImage}
                                     className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-white/90 dark:bg-black/90 hover:bg-white dark:hover:bg-black text-black/80 hover:text-black dark:text-white/80 dark:hover:text-white border border-black/10 dark:border-white/10 shadow-lg backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 cursor-pointer z-10"
-                                    aria-label="Previous Frame"
+                                    aria-label="Photo précédente"
                                 >
                                     <RiArrowLeftLine className="w-4 h-4" />
                                 </button>
                                 <button
                                     onClick={nextImage}
                                     className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-white/90 dark:bg-black/90 hover:bg-white dark:hover:bg-black text-black/80 hover:text-black dark:text-white/80 dark:hover:text-white border border-black/10 dark:border-white/10 shadow-lg backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 cursor-pointer z-10"
-                                    aria-label="Next Frame"
+                                    aria-label="Photo suivante"
                                 >
                                     <RiArrowRightLine className="w-4 h-4" />
                                 </button>
@@ -214,7 +214,7 @@ export const ExhibitionStream: React.FC<ExhibitionStreamProps> = ({ photo }) => 
                             className="absolute bottom-3 right-3 p-1.5 px-3 rounded-full bg-white/90 dark:bg-black/90 hover:bg-white dark:hover:bg-black text-black/80 dark:text-white/80 border border-black/10 dark:border-white/10 backdrop-blur-md transition-all opacity-0 group-hover:opacity-100 cursor-pointer text-[10px] font-mono uppercase tracking-wider flex items-center gap-1.5 shadow-md z-10"
                         >
                             <RiFullscreenLine className="w-3 h-3" />
-                            <span>Expand</span>
+                            <span>Agrandir</span>
                         </button>
                     </div>
 
@@ -239,7 +239,7 @@ export const ExhibitionStream: React.FC<ExhibitionStreamProps> = ({ photo }) => 
                                         >
                                             <img
                                                 src={img.url}
-                                                alt={img.alt || `Thumbnail ${idx + 1}`}
+                                                alt={img.alt || `Miniature ${idx + 1}`}
                                                 loading="lazy"
                                                 decoding="async"
                                                 referrerPolicy="no-referrer"
@@ -310,7 +310,7 @@ export const ExhibitionStream: React.FC<ExhibitionStreamProps> = ({ photo }) => 
                                 <button
                                     onClick={closeLightbox}
                                     className="p-2 -mr-2 text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white transition-colors cursor-pointer"
-                                    aria-label="Close Lightbox"
+                                    aria-label="Fermer"
                                 >
                                     <RiCloseLine className="w-5 h-5" />
                                 </button>
@@ -325,7 +325,7 @@ export const ExhibitionStream: React.FC<ExhibitionStreamProps> = ({ photo }) => 
                                             prevLightbox();
                                         }}
                                         className="cursor-pointer absolute left-4 sm:left-8 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 text-black/70 hover:text-black dark:text-white/70 dark:hover:text-white transition-colors z-20 backdrop-blur-sm"
-                                        aria-label="Previous Image"
+                                        aria-label="Image précédente"
                                     >
                                         <RiArrowLeftLine className="w-5 h-5" />
                                     </button>
@@ -336,7 +336,7 @@ export const ExhibitionStream: React.FC<ExhibitionStreamProps> = ({ photo }) => 
                                             nextLightbox();
                                         }}
                                         className="cursor-pointer absolute right-4 sm:right-8 top-1/2 -translate-y-1/2 p-2.5 rounded-full bg-black/5 hover:bg-black/10 dark:bg-white/10 dark:hover:bg-white/20 text-black/70 hover:text-black dark:text-white/70 dark:hover:text-white transition-colors z-20 backdrop-blur-sm"
-                                        aria-label="Next Image"
+                                        aria-label="Image suivante"
                                     >
                                         <RiArrowRightLine className="w-5 h-5" />
                                     </button>

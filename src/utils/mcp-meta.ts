@@ -64,10 +64,10 @@ export function supplementMCPMeta(content: string, slug: string, overrideNamespa
     let standardCanonical: string;
     if (namespace === 'blog') {
         standardCanonical = `${SITE_CONFIG.site}/blog/${slug}`;
-    } else if (namespace === 'traces') {
-        standardCanonical = `${SITE_CONFIG.site}/traces/${slug}`;
+    } else if (namespace === 'courses') {
+        standardCanonical = `${SITE_CONFIG.site}/courses/${slug}`;
     } else if (namespace === 'projects') {
-        standardCanonical = `${SITE_CONFIG.site}/projects#${slug}`;
+        standardCanonical = `${SITE_CONFIG.site}/projets#${slug}`;
     } else {
         standardCanonical = `${SITE_CONFIG.site}/${slug}`;
     }
